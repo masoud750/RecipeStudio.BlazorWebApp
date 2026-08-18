@@ -1,0 +1,52 @@
+﻿using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+
+
+namespace RecipeStudio.DataAccess.Data.Configurations
+{
+    internal class UserConfig : ConfigBase<User>
+    {
+        public override void Configure(EntityTypeBuilder<User> builder)
+        {
+            base.Configure(builder);
+            builder.Property(u => u.Id)
+                .IsRequired()
+                .HasColumnName("UserId");
+
+            builder.HasKey(u => u.Id);
+
+            // User <-> Recipe (M:N via Favorites)
+            builder.HasMany(u => u.FavoriteRecipes)
+                .WithMany(r => r.FavoritedBy)
+                .UsingEntity<Dictionary<string, object>>(
+                    "UserFavoriteRecipe",
+                    j => j.HasOne<Recipe>().WithMany().HasForeignKey("RecipeId"), // OnDelete(DeleteBehavior.Cascade)
+                    j => j.HasOne<User>().WithMany().HasForeignKey("UserId"),
+                    j =>
+                    {
+                        // both FKs  => PK
+                        j.HasKey("UserId", "RecipeId");
+                        j.ToTable("UserFavoriteRecipes");
+                    });
+
+            // User ↔ Recipe (Favorites)
+            builder.HasMany(u => u.FavoriteRecipes)
+                .WithMany(r => r.FavoritedBy)
+                .UsingEntity(j => j.ToTable("Favorites"));
+
+            
+            builder.HasIndex(r => r.UserName)
+                .IsUnique();
+
+            builder.HasIndex(r => r.Email)
+                .IsUnique();
+            
+            builder.Property(c => c.UserName)
+            .UseCollation("NOCASE");
+            
+           
+        }
+    }
+}
