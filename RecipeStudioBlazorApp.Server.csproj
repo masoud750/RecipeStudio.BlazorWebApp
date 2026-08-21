@@ -8,14 +8,38 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Domain.Tests\**" />
     <Compile Remove="Domain\**" />
+    <Compile Remove="Infrastructure.Tests\**" />
+    <Compile Remove="Infrastructure\**" />
     <Compile Remove="RecipeStudio.DataAccess\**" />
+    <Content Remove="Domain.Tests\**" />
     <Content Remove="Domain\**" />
+    <Content Remove="Infrastructure.Tests\**" />
+    <Content Remove="Infrastructure\**" />
     <Content Remove="RecipeStudio.DataAccess\**" />
+    <EmbeddedResource Remove="Domain.Tests\**" />
     <EmbeddedResource Remove="Domain\**" />
+    <EmbeddedResource Remove="Infrastructure.Tests\**" />
+    <EmbeddedResource Remove="Infrastructure\**" />
     <EmbeddedResource Remove="RecipeStudio.DataAccess\**" />
+    <None Remove="Domain.Tests\**" />
     <None Remove="Domain\**" />
+    <None Remove="Infrastructure.Tests\**" />
+    <None Remove="Infrastructure\**" />
     <None Remove="RecipeStudio.DataAccess\**" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.11">     
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="RecipeStudio.DataAccess\RecipeStudio.DataAccess.csproj" />
+  </ItemGroup>
+	
+
 
 </Project>

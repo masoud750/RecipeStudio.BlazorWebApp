@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 
 
 
@@ -21,22 +22,17 @@ namespace RecipeStudio.DataAccess.Data.Configurations
             builder.HasMany(u => u.FavoriteRecipes)
                 .WithMany(r => r.FavoritedBy)
                 .UsingEntity<Dictionary<string, object>>(
-                    "UserFavoriteRecipe",
+                    "Favorites",
                     j => j.HasOne<Recipe>().WithMany().HasForeignKey("RecipeId"), // OnDelete(DeleteBehavior.Cascade)
                     j => j.HasOne<User>().WithMany().HasForeignKey("UserId"),
                     j =>
                     {
                         // both FKs  => PK
                         j.HasKey("UserId", "RecipeId");
-                        j.ToTable("UserFavoriteRecipes");
+                        j.ToTable("Favorites");
                     });
 
-            // User ↔ Recipe (Favorites)
-            builder.HasMany(u => u.FavoriteRecipes)
-                .WithMany(r => r.FavoritedBy)
-                .UsingEntity(j => j.ToTable("Favorites"));
 
-            
             builder.HasIndex(r => r.UserName)
                 .IsUnique();
 
