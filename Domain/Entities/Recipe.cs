@@ -17,7 +17,8 @@ namespace Domain.Entities
                    IEnumerable<Step> steps,
                    IEnumerable<Ingredient> ingredients)
         {
-
+            ArgumentNullException.ThrowIfNull(name, nameof(name));
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Recipe name cannot be empty.", nameof(name));
             ArgumentNullException.ThrowIfNull(categories, nameof(categories));
             ArgumentNullException.ThrowIfNull(steps, nameof(steps));
             ArgumentNullException.ThrowIfNull(ingredients, nameof(ingredients));
@@ -51,6 +52,7 @@ namespace Domain.Entities
         public ICollection<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
 
         public ICollection<User> FavoritedBy { get; set; } = new List<User>();
-         
+
+        
     }
 }
