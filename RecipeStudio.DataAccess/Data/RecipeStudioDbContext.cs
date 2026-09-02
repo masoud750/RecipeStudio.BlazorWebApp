@@ -23,6 +23,7 @@ namespace RecipeStudio.DataAccess.Data
             // Load automatically all IEntityTypeConfiguration<T> classes
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(RecipeStudioDbContext).Assembly);
             base.OnModelCreating(modelBuilder);
+     
             // Users
             modelBuilder.Entity<User>().HasData(
                 new User { Id = 1, UserName = "ChefAnna", Email = "anna@example.com", PasswordHash = "hash1" },
@@ -35,7 +36,9 @@ namespace RecipeStudio.DataAccess.Data
                 new User { Id = 8, UserName = "ChefEmma", Email = "emma@example.com", PasswordHash = "hash8" },
                 new User { Id = 9, UserName = "ChefJohn", Email = "john@example.com", PasswordHash = "hash9" },
                 new User { Id = 10, UserName = "ChefSophia", Email = "sophia@example.com", PasswordHash = "hash10" }
-            );
+                );
+
+
 
             // Categories
             modelBuilder.Entity<Category>().HasData(

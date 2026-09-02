@@ -14,9 +14,11 @@ namespace RecipeStudio.DataAccess.Data
             var optionsBuilder = new DbContextOptionsBuilder<RecipeStudioDbContext>();
 
             // TODO: Use your real connection string here
+            //optionsBuilder.UseSqlServer(
+            //    "Server=localhost;Database=RecipeStudioDb;Trusted_Connection=True;MultipleActiveResultSets=true");
             optionsBuilder.UseSqlServer(
-                "Server=localhost;Database=RecipeStudioDb;Trusted_Connection=True;MultipleActiveResultSets=true");
-
+            "Server=.;Database=RecipeStudio_Test;Trusted_Connection=True;TrustServerCertificate=True;"
+        );
             return new RecipeStudioDbContext(optionsBuilder.Options);
         }
     }

@@ -101,8 +101,7 @@ namespace RecipeStudio.DataAccess.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .UseCollation("NOCASE");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("ValidFrom")
                         .ValueGeneratedOnAdd()
@@ -119,78 +118,84 @@ namespace RecipeStudio.DataAccess.Migrations
                     b.HasIndex("Id")
                         .IsUnique();
 
-                    b.ToTable("Categories");
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Categories", t =>
+                        {
+                            t.HasCheckConstraint("CK_Category_Name_NotEmpty", "Name <> ''");
+                        });
 
                     b.HasData(
                         new
                         {
                             Id = 1,
                             Name = "Italian",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(5248),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 2,
                             Name = "Indian",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(6077),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 3,
                             Name = "Mexican",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(6126),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 4,
                             Name = "French",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(6127),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 5,
                             Name = "Japanese",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(6128),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 6,
                             Name = "Chinese",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(6144),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 7,
                             Name = "Mediterranean",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(6145),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 8,
                             Name = "American",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(6146),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 9,
                             Name = "Thai",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(6147),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 10,
                             Name = "Spanish",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(6148),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -206,8 +211,7 @@ namespace RecipeStudio.DataAccess.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .UseCollation("NOCASE");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Quantity")
                         .IsRequired()
@@ -236,80 +240,80 @@ namespace RecipeStudio.DataAccess.Migrations
                             Id = 1,
                             Name = "Spaghetti",
                             Quantity = "200g",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(8477),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 2,
                             Name = "Chicken",
                             Quantity = "500g",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(9979),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 3,
                             Name = "Tomatoes",
                             Quantity = "3 pcs",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(9981),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 4,
                             Name = "Garlic",
                             Quantity = "2 cloves",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(9983),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 5,
                             Name = "Olive Oil",
                             Quantity = "50ml",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(9984),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 6,
                             Name = "Rice",
                             Quantity = "250g",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(9985),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 7,
                             Name = "Beef",
                             Quantity = "400g",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(9986),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 8,
                             Name = "Potatoes",
                             Quantity = "3 pcs",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(9987),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 9,
                             Name = "Cheese",
                             Quantity = "100g",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(9988),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 10,
                             Name = "Basil",
                             Quantity = "10 leaves",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 520, DateTimeKind.Utc).AddTicks(9989),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -328,8 +332,7 @@ namespace RecipeStudio.DataAccess.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
-                        .UseCollation("NOCASE");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -360,8 +363,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Description = "Classic Italian pasta.",
                             Name = "Spaghetti Carbonara",
                             UserId = 1,
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(3553),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -369,8 +372,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Description = "Aromatic curry with chicken.",
                             Name = "Chicken Curry",
                             UserId = 2,
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(5899),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -378,8 +381,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Description = "Mexican street food.",
                             Name = "Beef Tacos",
                             UserId = 3,
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(5903),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -387,8 +390,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Description = "Japanese delicacy.",
                             Name = "Sushi Roll",
                             UserId = 4,
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(5905),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -396,8 +399,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Description = "Rich and savory.",
                             Name = "French Onion Soup",
                             UserId = 5,
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(5907),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -405,8 +408,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Description = "Chinese classic.",
                             Name = "Sweet and Sour Pork",
                             UserId = 6,
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(5909),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -414,8 +417,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Description = "Fresh Mediterranean salad.",
                             Name = "Greek Salad",
                             UserId = 7,
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(5910),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -423,8 +426,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Description = "American comfort food.",
                             Name = "Burger Deluxe",
                             UserId = 8,
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(5912),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -432,8 +435,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Description = "Thai stir-fried noodles.",
                             Name = "Pad Thai",
                             UserId = 9,
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(5914),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -441,8 +444,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Description = "Spanish rice dish.",
                             Name = "Paella",
                             UserId = 10,
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(5915),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -458,8 +461,7 @@ namespace RecipeStudio.DataAccess.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .UseCollation("NOCASE");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("ValidFrom")
                         .HasColumnType("datetime2");
@@ -479,71 +481,71 @@ namespace RecipeStudio.DataAccess.Migrations
                         {
                             Id = 1,
                             Name = "Boil pasta until al dente.",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(796),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 2,
                             Name = "Cook chicken with onions and garlic.",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(1203),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 3,
                             Name = "Chop vegetables finely.",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(1205),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 4,
                             Name = "Simmer sauce for 20 minutes.",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(1206),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 5,
                             Name = "Preheat oven to 180°C.",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(1207),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 6,
                             Name = "Grill beef until medium rare.",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(1208),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 7,
                             Name = "Steam rice until fluffy.",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(1209),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 8,
                             Name = "Mash potatoes with butter.",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(1210),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 9,
                             Name = "Mix salad dressing.",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(1210),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 10,
                             Name = "Serve hot with garnish.",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 521, DateTimeKind.Utc).AddTicks(1211),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -566,8 +568,7 @@ namespace RecipeStudio.DataAccess.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)")
-                        .UseCollation("NOCASE");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("ValidFrom")
                         .ValueGeneratedOnAdd()
@@ -596,8 +597,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Email = "anna@example.com",
                             PasswordHash = "hash1",
                             UserName = "ChefAnna",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 519, DateTimeKind.Utc).AddTicks(2802),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -605,8 +606,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Email = "masoud@example.com",
                             PasswordHash = "hash2",
                             UserName = "ChefSam",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 519, DateTimeKind.Utc).AddTicks(4463),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -614,8 +615,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Email = "luca@example.com",
                             PasswordHash = "hash3",
                             UserName = "ChefLuca",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 519, DateTimeKind.Utc).AddTicks(4466),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -623,8 +624,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Email = "maria@example.com",
                             PasswordHash = "hash4",
                             UserName = "ChefMaria",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 519, DateTimeKind.Utc).AddTicks(4468),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -632,8 +633,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Email = "tom@example.com",
                             PasswordHash = "hash5",
                             UserName = "ChefTom",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 519, DateTimeKind.Utc).AddTicks(4472),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -641,8 +642,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Email = "sara@example.com",
                             PasswordHash = "hash6",
                             UserName = "ChefSara",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 519, DateTimeKind.Utc).AddTicks(4474),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -650,8 +651,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Email = "ali@example.com",
                             PasswordHash = "hash7",
                             UserName = "ChefAli",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 519, DateTimeKind.Utc).AddTicks(4475),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -659,8 +660,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Email = "emma@example.com",
                             PasswordHash = "hash8",
                             UserName = "ChefEmma",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 519, DateTimeKind.Utc).AddTicks(4477),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -668,8 +669,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Email = "john@example.com",
                             PasswordHash = "hash9",
                             UserName = "ChefJohn",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 519, DateTimeKind.Utc).AddTicks(4479),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -677,8 +678,8 @@ namespace RecipeStudio.DataAccess.Migrations
                             Email = "sophia@example.com",
                             PasswordHash = "hash10",
                             UserName = "ChefSophia",
-                            ValidFrom = new DateTime(2026, 8, 21, 10, 37, 20, 519, DateTimeKind.Utc).AddTicks(4481),
-                            ValidTo = new DateTime(2090, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ValidFrom = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -914,13 +915,13 @@ namespace RecipeStudio.DataAccess.Migrations
                     b.HasOne("Domain.Entities.Recipe", null)
                         .WithMany()
                         .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
