@@ -13,8 +13,7 @@ namespace RecipeStudio.DataAccess.Data.Configurations
         {
             builder.Property(s => s.Id).HasColumnName("StepId");
             builder.HasKey(s => s.Id);
-            builder.Property(s => s.Name).IsRequired().HasMaxLength(100)
-                .UseCollation("NOCASE");
+            builder.Property(s => s.Name).IsRequired().HasMaxLength(100);
             builder.HasIndex(s => s.Name).IsUnique();
           
         }

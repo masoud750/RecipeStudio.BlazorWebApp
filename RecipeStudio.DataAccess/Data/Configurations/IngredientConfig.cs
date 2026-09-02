@@ -11,8 +11,7 @@ namespace RecipeStudio.DataAccess.Data.Configurations
             base.Configure(builder);
             builder.Property(i => i.Id).HasColumnName("IngredientId");
             builder.HasKey(i => i.Id);
-            builder.Property(i => i.Name).IsRequired().HasMaxLength(100)
-                .UseCollation("NOCASE");
+            builder.Property(i => i.Name).IsRequired().HasMaxLength(100);
             builder.HasIndex(i => i.Name).IsUnique();
         }
 

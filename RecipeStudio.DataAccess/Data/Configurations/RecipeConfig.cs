@@ -73,7 +73,7 @@ namespace Domain.Entities
             // since we want to allow duplicates for expired recipes and keep history.
             builder.HasIndex(r => r.Name).IsUnique();
             builder.Property(r => r.Name)
-                .IsRequired().UseCollation("NOCASE");
+                .IsRequired();
 
         }
     }

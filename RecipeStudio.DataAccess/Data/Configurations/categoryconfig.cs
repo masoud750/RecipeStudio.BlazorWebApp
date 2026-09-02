@@ -16,8 +16,18 @@ namespace RecipeStudio.DataAccess.Data.Configurations
             builder.Property(c => c.Id).HasColumnName("CategoryId");
             builder.HasKey(c => c.Id);
             builder.HasIndex(c => c.Id).IsUnique();
-            builder. Property(c => c.Name).IsRequired().HasMaxLength(100).UseCollation("NOCASE");// case-insensitive comparison
-           
+            builder.Property(c => c.Name).IsRequired()
+                .HasMaxLength(100);
+                  
+                
+            builder.HasIndex(c => c.Name).IsUnique();
+            builder.ToTable(t =>
+            {
+                t.HasCheckConstraint(
+                    "CK_Category_Name_NotEmpty",
+                    "Name <> ''"
+                );
+            });
         }
     }
 }
