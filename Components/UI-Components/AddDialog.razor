@@ -1,0 +1,108 @@
+﻿@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+@* <dialog class="body-dialog" @ref="_dialog">
+    <div id="container">
+        <h2 id="dialog-caption">Add</h2>
+
+        <label id="name-label">Name:</label>
+        <input id="textBox" type="text" />
+
+        <button id="btn-close" @onclick="Close">Close</button>
+        <button id="btn-add">Add</button>
+    </div>
+</dialog> *@
+
+    
+
+ <dialog @ref="_dialog" class="body-dialog">
+    <div @ref="_header" class="dialog-header">
+        Add
+        <button @onclick="Close">X</button>
+    </div>
+
+    <div class="dialog-body">
+        <label>Name:</label>
+        <input type="text" />
+    </div>
+
+    <div class="dialog-footer">
+        <button @onclick="Close" class="close-btn">Close</button>
+        <button @onclick="AddItem" class="add-btn">Add</button>
+    </div>
+</dialog>
+ 
+
+
+@code{
+
+    private ElementReference _dialog;
+    private ElementReference _header;
+    private ElementReference _nameInput;
+
+    private void Close()
+    {
+        OnClose.InvokeAsync();
+    }
+    [Parameter]
+    public EventCallback OnClose
+    {
+        get; set;
+    }
+
+
+    public void AddItem()
+    {
+        OnAdd.InvokeAsync(_nameInput.ToString());
+    }
+
+    [Parameter]
+    public EventCallback<string> OnAdd
+    {
+        get; set;
+    }
+
+
+
+
+    [Parameter] public bool Visible { get; set; }
+
+ 
+
+
+    public async Task ShowDialog()
+    {
+        JsModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import",
+            "./Components/UI-Components/AddDialog.razor.js");
+        if (JsModule == null)
+            return;
+        await JsModule.InvokeVoidAsync("showDialog", _dialog);
+        Visible = true;
+    }
+    IJSObjectReference? JsModule;
+
+    public async Task CloseDialog()
+    {
+        JsModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import",
+            "./Components/UI-Components/AddDialog.razor.js");
+        if (JsModule == null)
+            return;
+        await JsModule.InvokeVoidAsync("closeDialog", _dialog);
+        Visible = false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+                JsModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import",
+                    "./Components/UI-Components/AddDialog.razor.js");
+                if (JsModule == null)
+                    return;
+       
+                 await JsModule.InvokeVoidAsync("makeDraggable", _dialog, _header);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+    
+}
