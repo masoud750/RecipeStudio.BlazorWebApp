@@ -1,5 +1,11 @@
 <Solution>
+  <Project Path="Domain.Tests/Domain.Tests.csproj" Id="e61ff163-aa46-494a-9224-c2c5061e2514" />
   <Project Path="Domain/Domain.csproj" />
+  <Project Path="Infrastructure.Tests/RecipeStudio.Infrastructure.IntegrationTests.csproj" Id="a1327d0b-929d-42b3-a274-bb3dc7f638d7" />
+  <Project Path="Infrastructure/Infrastructure.csproj" Id="cc553bd4-7d69-4f94-b5a5-2dfec28c6255" />
+  <Project Path="RecipeStduio.DataAccess.IntegrationTests/RecipeStduio.DataAccess.IntegrationTests.csproj" />
+  <Project Path="RecipeStudio.Application.Tests/RecipeStudio.Application.Tests.csproj" Id="a91ca3b1-0385-4df8-aa93-1bc15e219c5d" />
+  <Project Path="RecipeStudio.Application/RecipeStudio.Application.csproj" Id="c0f0867e-a7a5-45fb-9fbb-fa499e25fec0" />
   <Project Path="RecipeStudio.DataAccess/RecipeStudio.DataAccess.csproj" />
   <Project Path="RecipeStudioBlazorApp.Server.csproj" />
 </Solution>

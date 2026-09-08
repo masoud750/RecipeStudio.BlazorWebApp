@@ -1,0 +1,46 @@
+﻿dialog.body-dialog {
+    background-color: white;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    width: 300px;
+}
+
+.dialog-header {
+    background: darkblue;
+    color: white;
+    padding: 10px;
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between; /* pushes X to the right */
+    align-items: center; /* keeps text and button vertically aligned */
+    padding: 5px 10px;
+}
+
+    .dialog-header button {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        margin-left: auto; /* ensures it stays on the right */
+    }
+
+.dialog-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+}
+
+.dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 10px 15px;
+}
+
+.add-btn{
+    width:80px;
+    height:30px;
+}

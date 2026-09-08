@@ -12,21 +12,37 @@
     <Compile Remove="Domain\**" />
     <Compile Remove="Infrastructure.Tests\**" />
     <Compile Remove="Infrastructure\**" />
+    <Compile Remove="RecipesDataAccessIntegrationTests\**" />
+    <Compile Remove="RecipeStduio.DataAccess.IntegrationTests\**" />
+    <Compile Remove="RecipeStudio.Application.Tests\**" />
+    <Compile Remove="RecipeStudio.Application\**" />
     <Compile Remove="RecipeStudio.DataAccess\**" />
     <Content Remove="Domain.Tests\**" />
     <Content Remove="Domain\**" />
     <Content Remove="Infrastructure.Tests\**" />
     <Content Remove="Infrastructure\**" />
+    <Content Remove="RecipesDataAccessIntegrationTests\**" />
+    <Content Remove="RecipeStduio.DataAccess.IntegrationTests\**" />
+    <Content Remove="RecipeStudio.Application.Tests\**" />
+    <Content Remove="RecipeStudio.Application\**" />
     <Content Remove="RecipeStudio.DataAccess\**" />
     <EmbeddedResource Remove="Domain.Tests\**" />
     <EmbeddedResource Remove="Domain\**" />
     <EmbeddedResource Remove="Infrastructure.Tests\**" />
     <EmbeddedResource Remove="Infrastructure\**" />
+    <EmbeddedResource Remove="RecipesDataAccessIntegrationTests\**" />
+    <EmbeddedResource Remove="RecipeStduio.DataAccess.IntegrationTests\**" />
+    <EmbeddedResource Remove="RecipeStudio.Application.Tests\**" />
+    <EmbeddedResource Remove="RecipeStudio.Application\**" />
     <EmbeddedResource Remove="RecipeStudio.DataAccess\**" />
     <None Remove="Domain.Tests\**" />
     <None Remove="Domain\**" />
     <None Remove="Infrastructure.Tests\**" />
     <None Remove="Infrastructure\**" />
+    <None Remove="RecipesDataAccessIntegrationTests\**" />
+    <None Remove="RecipeStduio.DataAccess.IntegrationTests\**" />
+    <None Remove="RecipeStudio.Application.Tests\**" />
+    <None Remove="RecipeStudio.Application\**" />
     <None Remove="RecipeStudio.DataAccess\**" />
   </ItemGroup>
 
@@ -37,7 +53,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="RecipeStudio.DataAccess\RecipeStudio.DataAccess.csproj" />
+    <ProjectReference Include="Domain\Domain.csproj" />
+    <ProjectReference Include="RecipeStudio.Application\RecipeStudio.Application.csproj" />
   </ItemGroup>
 	
 
