@@ -9,14 +9,14 @@ using System.Runtime.CompilerServices;
 namespace RecipeStudio.Infrastructure.Tests.Repositories
 {
     [TestFixture]
-  
+
     public class CategoryRepositoryTests
     {
         [SetUp]
         public async Task Setup()
         {
-            
-                await InitializeAsync();
+
+            await InitializeAsync();
         }
 
         public async Task InitializeAsync()
@@ -45,7 +45,7 @@ namespace RecipeStudio.Infrastructure.Tests.Repositories
 
             await _dbContext.Database.MigrateAsync();
         }
-        
+
 
         private RecipeStudioDbContext? _dbContext;
         private string? _connectionString;
@@ -80,7 +80,7 @@ namespace RecipeStudio.Infrastructure.Tests.Repositories
                 ALTER DATABASE [{_dbName}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
                 DROP DATABASE [{_dbName}];
             END";
-        
+
 
             await cmd.ExecuteNonQueryAsync();
         }
@@ -96,7 +96,7 @@ namespace RecipeStudio.Infrastructure.Tests.Repositories
         public void AdddAsync_WhenCategoryIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-          
+
             var repository = new CategoryRepository(_dbContext!);
             // Act & Assert
             var ex = Assert.ThrowsAsync<ArgumentNullException>(async () => await repository.AddAsync(null!));
@@ -104,7 +104,8 @@ namespace RecipeStudio.Infrastructure.Tests.Repositories
         }
 
         [Test]
-        public async Task AddAsync_AddingValidEntry_ShouldBeAdded() {
+        public async Task AddAsync_AddingValidEntry_ShouldBeAdded()
+        {
             var entity = new Category()
             {
                 Name = "Test",
@@ -113,18 +114,18 @@ namespace RecipeStudio.Infrastructure.Tests.Repositories
             var sut = new CategoryRepository(_dbContext!);
             await sut.AddAsync(entity);
 
-            
+
         }
 
         [Test]
         public async Task ExistAsync_WhenEntityIsNull_ThrowsArgumentNullException()
         {
-            
+
             var ex = Assert.ThrowsAsync<ArgumentNullException>(async () =>
             {
                 var sut = new CategoryRepository(_dbContext!);
                 _ = await sut.ExistAsync(null!);
-               
+
             });
 
             Assert.That(ex.ParamName, Is.EqualTo("entity"));
@@ -135,11 +136,11 @@ namespace RecipeStudio.Infrastructure.Tests.Repositories
         public async Task ExistAsync_PassingExistingEntity_ShouldReturnTrue()
         {
             /// <see cref="RecipeStudioDbContext"/>
-            var category = new Category() { Id = 2, Name = "Thahi" }; 
-           
-           var sut = new CategoryRepository(_dbContext!);
-           bool result = await sut.ExistAsync(category);
-           Assert.That(result, Is.True);
+            var category = new Category() { Id = 2, Name = "Thahi" };
+
+            var sut = new CategoryRepository(_dbContext!);
+            bool result = await sut.ExistAsync(category);
+            Assert.That(result, Is.True);
 
         }
 
@@ -159,6 +160,15 @@ namespace RecipeStudio.Infrastructure.Tests.Repositories
             var sut = new CategoryRepository(_dbContext!);
             await sut.DeleteAsync(category);
             Assert.That(await sut.ExistAsync(category), Is.False);
+        }
+
+        [Test]
+        public async Task GetAllAsync_ShouldReturnAllCategories()
+        {
+            var sut = new CategoryRepository(_dbContext!);
+            var categories = await sut.GetAllAsync();
+            Assert.That(categories, Is.Not.Null);
+            Assert.That(categories.Count, Is.EqualTo(10));
         }
     }
 }
