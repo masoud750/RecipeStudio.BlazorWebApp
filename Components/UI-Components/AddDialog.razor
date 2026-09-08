@@ -1,23 +1,9 @@
 ﻿@using Microsoft.JSInterop
 @inject IJSRuntime JSRuntime
 
-@* <dialog class="body-dialog" @ref="_dialog">
-    <div id="container">
-        <h2 id="dialog-caption">Add</h2>
-
-        <label id="name-label">Name:</label>
-        <input id="textBox" type="text" />
-
-        <button id="btn-close" @onclick="Close">Close</button>
-        <button id="btn-add">Add</button>
-    </div>
-</dialog> *@
-
-    
-
  <dialog @ref="_dialog" class="body-dialog">
-    <div @ref="_header" class="dialog-header">
-        Add
+    <div @ref="_caption" class="dialog-header">        
+            @Title        
         <button @onclick="Close">X</button>
     </div>
 
@@ -37,7 +23,7 @@
 @code{
 
     private ElementReference _dialog;
-    private ElementReference _header;
+    private ElementReference _caption;
     private ElementReference _nameInput;
 
     private void Close()
@@ -67,27 +53,27 @@
 
     [Parameter] public bool Visible { get; set; }
 
- 
+
 
 
     public async Task ShowDialog()
     {
-        JsModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import",
-            "./Components/UI-Components/AddDialog.razor.js");
-        if (JsModule == null)
+        JSModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import",
+            "/JS/shared-dialog.js");
+        if (JSModule == null)
             return;
-        await JsModule.InvokeVoidAsync("showDialog", _dialog);
+        await JSModule.InvokeVoidAsync("showDialog", _dialog);
         Visible = true;
     }
-    IJSObjectReference? JsModule;
+    IJSObjectReference? JSModule;
 
     public async Task CloseDialog()
     {
-        JsModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import",
-            "./Components/UI-Components/AddDialog.razor.js");
-        if (JsModule == null)
+        JSModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import",
+            "/JS/shared-dialog.js");
+        if (JSModule == null)
             return;
-        await JsModule.InvokeVoidAsync("closeDialog", _dialog);
+        await JSModule.InvokeVoidAsync("closeDialog", _dialog);
         Visible = false;
     }
 
@@ -95,14 +81,17 @@
     {
         if (firstRender)
         {
-                JsModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import",
-                    "./Components/UI-Components/AddDialog.razor.js");
-                if (JsModule == null)
-                    return;
-       
-                 await JsModule.InvokeVoidAsync("makeDraggable", _dialog, _header);
+         
+            JSModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import",
+                "/JS/shared-dialog.js");
+            if (JSModule == null)
+                return;
+            await JSModule.InvokeVoidAsync("makeDraggable", _dialog, _caption); 
+            
         }
         await base.OnAfterRenderAsync(firstRender);
     }
-    
-}
+
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = string.Empty;
+    }

@@ -1,0 +1,70 @@
+﻿@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+<dialog @ref="_dialog" class="body-dialog">
+    <div @ref="_caption" class="dialog-header">
+        @Title
+        <button @onclick="Close">X</button>
+    </div>
+    <div class="dialog-body">
+        <lable>Name:</lable>
+        <input type="text" @bind="Name"/>
+    </div>
+     <div class="dialog-footer">
+        <button @onclick="Close" class="close-btn">Close</button>
+       <button @onclick="UpdateItem" class="update-btn">Update</button>
+    </div>
+</dialog>
+
+@code {
+    private ElementReference _dialog;
+    private ElementReference _caption;
+    [Parameter,EditorRequired]
+    public string Title { get; set; } = string.Empty;
+    [Parameter, EditorRequired]
+    public string Name { get; set; } = string.Empty;
+    private void Close()
+    {
+        OnClose.InvokeAsync();
+    }
+    [Parameter]
+    public EventCallback OnClose { get; set; }  
+
+    private void UpdateItem()
+    {
+        OnUpdateItem.InvokeAsync();
+    }
+
+    [Parameter]
+    public EventCallback<string> OnUpdateItem { get; set; }
+
+    public async Task ShowDialog()
+    {
+        JSModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import",
+            "/JS/shared-dialog.js");
+        if (JSModule == null)
+            return;
+        await JSModule.InvokeVoidAsync("showDialog", _dialog);
+        Visible = true;
+     
+    }
+
+
+
+   
+    public bool Visible { get; private set; }
+
+
+    IJSObjectReference? JSModule;
+
+    public async Task CloseDialog()
+    {
+        JSModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import",
+          "/JS/shared-dialog.js");
+        if (JSModule == null)
+            return;
+        await JSModule.InvokeVoidAsync("closeDialog", _dialog);
+        Visible = false;
+    }
+  
+
+}
