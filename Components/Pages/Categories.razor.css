@@ -1,0 +1,61 @@
+/* CSS for Categories component */
+
+#container {
+    display: grid; /* with this we declare our container as a grid */
+
+    grid-template-columns: 1fr 3fr; /* two columns */
+    grid-template-rows: 100px Auto ; /* 1 row */
+
+}
+
+
+#Category-label {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+#Edit-label {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+#FirstComponent {
+    grid-row: 2;
+    grid-column: 1;
+}
+
+#SecondLayout {
+    grid-row: 2;
+    grid-column: 2;
+}
+
+.context-menu {
+    position: fixed;
+    background: white;
+    border: 1px solid #ccc;
+    z-index: 1000;
+    padding: 5px;
+    box-shadow: 0 2px 6px rgb(0,0,0,0.2);
+    background-color: white;
+    min-width: 100px;
+    max-width: 150px;
+    min-height: 20px;
+    max-height: 40px;
+}
+
+    .context-menu ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      
+    }
+
+.context-menu li{
+        padding: 0;
+        margin:0;
+        cursor: pointer;
+ }
+
+.context-menu li:hover {
+    background: #eeee;
+}

@@ -1,0 +1,178 @@
+﻿@page "/Categories"
+@rendermode InteractiveServer
+@using Domain.Entities
+@using RecipeStudioBlazorApp.Server.Components.UI_Components
+@using RecipeStudio.Application.Interfaces
+@inject ICategoryService _categoryService
+
+<PageTitle>Categories</PageTitle>
+<h1>Categories</h1>
+
+
+
+<div id="container">
+
+   
+    <!-- NEW: row 2, column 1 -->
+    <div id="FirstComponent">
+        @if (_categories != null && _categories.Count != 0)
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td><b>No</b></td>
+                        <td><b>Categories</b></td>
+                        <td><button @onclick="()=>ExecuteAction(MenuItems[0])" class="add-btn">+</button></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        _index = 0;
+                    }
+                    @foreach (var category in _categories!)
+                    {
+                        _index++;
+                        <tr >
+                            <td>@_index</td>
+                            <td @oncontextmenu:preventDefault="true"
+                                @oncontextmenu:stopPropagation="true"
+                                @oncontextmenu="(e => ShowContextMenu(category, e))">
+                                @category.Name
+                            </td>
+                            <td/>
+                           
+
+                        </tr>                       
+                    } 
+                </tbody>
+            </table>
+
+           
+            
+        }
+
+    </div>
+   
+   
+    <div id="SecondLayout"></div>
+</div>
+
+<ContextMenu MenuItems="MenuItems"
+Visible="IsMenuVisible"
+X="MenuXpx"
+Y="MenuYpx"
+CurrentItem="CurrentItem"
+OnAction="ExecuteAction" />
+<AddDialog @ref="_addDialog"
+        
+           OnAdd="AddCategory"
+           OnClose="CloseAddDialog"
+           Title=@Title />
+<EditDialog @ref="_editDialog"
+          
+            OnUpdateItem="UpdateCategory"
+            OnClose="CloseEditDialog"
+            Title=@Title
+            Name=@CurrentItem?.Name />
+
+@code {
+
+    private List<Category>? _categories;
+    private int _index;
+    private Dictionary<string, Func<Category, Task>>? MenuActions;
+    private AddDialog? _addDialog;
+    private EditDialog? _editDialog;
+    private List<string> MenuItems = new() { "Add", "Delete", "Edit" };
+    public string Title { get; set; } = string.Empty;
+    private bool Visible { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        MenuActions = new()
+                {
+                    { "Delete", async (s) =>
+                        {
+                            if (s != null)
+                            {
+                                await _categoryService.DeleteAsync(s);
+
+
+                                    _categories?.Remove(s);
+
+                            }
+                        }
+                    },
+                    { "Add", async (s) =>
+                        {
+                           Title = "Add Category";
+                           await _addDialog?.ShowDialog()!;
+                        }
+                    },
+                    { "Edit", async (s) =>
+                        {
+                           Title = "Edit Category";
+                           await _editDialog?.ShowDialog()!;
+                        }
+                    }
+                };
+        _categories = await _categoryService.GetAllAsync();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task ExecuteAction(string key)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(key, nameof(key));
+        await MenuActions[key].Invoke(CurrentItem);
+        IsMenuVisible = false;
+    }
+
+    public void ShowContextMenu(Category? item, MouseEventArgs args)
+    {
+        if (item == null)
+            return;
+        CurrentItem = item;
+        MenuXpx = (int)args.PageX;
+        MenuYpx = (int)args.PageY;
+        IsMenuVisible = true;
+    }
+
+    private bool IsMenuVisible;
+    private int MenuXpx = 0;
+    private int MenuYpx = 0;
+    public Category? CurrentItem;
+
+    private void Delete(Category currentItem)
+    {
+        Console.WriteLine("ttt");
+        IsMenuVisible = false;
+    }
+
+
+    private async Task CloseAddDialog()
+    {
+        await _addDialog?.CloseDialog()!;
+
+    }
+
+    private void AddCategory(string name)
+    {
+
+    }
+
+    private void OpenAddDialog()
+    {
+
+    }
+
+
+
+
+    private async Task CloseEditDialog()
+    {
+        await _editDialog?.CloseDialog()!; 
+    }
+
+    private void UpdateCategory(string name)
+    {
+        throw new NotImplementedException();
+    }
+}
