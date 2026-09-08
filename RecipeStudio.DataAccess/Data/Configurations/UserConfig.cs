@@ -23,26 +23,27 @@ namespace RecipeStudio.DataAccess.Data.Configurations
                 .WithMany(r => r.FavoritedBy)
                 .UsingEntity<Dictionary<string, object>>(
                     "Favorites",
-                    j => j.HasOne<Recipe>().WithMany().HasForeignKey("RecipeId"), // OnDelete(DeleteBehavior.Cascade)
-                    j => j.HasOne<User>().WithMany().HasForeignKey("UserId"),
+                    j => j.HasOne<Recipe>()
+                          .WithMany()
+                          .HasForeignKey("RecipeId")
+                          .OnDelete(DeleteBehavior.NoAction),
+                    j => j.HasOne<User>()
+                          .WithMany()
+                          .HasForeignKey("UserId")
+                          .OnDelete(DeleteBehavior.NoAction),
                     j =>
                     {
-                        // both FKs  => PK
                         j.HasKey("UserId", "RecipeId");
                         j.ToTable("Favorites");
                     });
-
 
             builder.HasIndex(r => r.UserName)
                 .IsUnique();
 
             builder.HasIndex(r => r.Email)
                 .IsUnique();
-            
-            builder.Property(c => c.UserName)
-            .UseCollation("NOCASE");
-            
-           
+
+            builder.Property(c => c.UserName);
         }
     }
 }
