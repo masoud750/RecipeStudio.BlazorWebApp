@@ -17,6 +17,7 @@
     <Compile Remove="RecipeStudio.Application.Tests\**" />
     <Compile Remove="RecipeStudio.Application\**" />
     <Compile Remove="RecipeStudio.DataAccess\**" />
+    <Compile Remove="RecipeStudio.shared\**" />
     <Content Remove="Domain.Tests\**" />
     <Content Remove="Domain\**" />
     <Content Remove="Infrastructure.Tests\**" />
@@ -26,6 +27,7 @@
     <Content Remove="RecipeStudio.Application.Tests\**" />
     <Content Remove="RecipeStudio.Application\**" />
     <Content Remove="RecipeStudio.DataAccess\**" />
+    <Content Remove="RecipeStudio.shared\**" />
     <EmbeddedResource Remove="Domain.Tests\**" />
     <EmbeddedResource Remove="Domain\**" />
     <EmbeddedResource Remove="Infrastructure.Tests\**" />
@@ -35,6 +37,7 @@
     <EmbeddedResource Remove="RecipeStudio.Application.Tests\**" />
     <EmbeddedResource Remove="RecipeStudio.Application\**" />
     <EmbeddedResource Remove="RecipeStudio.DataAccess\**" />
+    <EmbeddedResource Remove="RecipeStudio.shared\**" />
     <None Remove="Domain.Tests\**" />
     <None Remove="Domain\**" />
     <None Remove="Infrastructure.Tests\**" />
@@ -44,9 +47,11 @@
     <None Remove="RecipeStudio.Application.Tests\**" />
     <None Remove="RecipeStudio.Application\**" />
     <None Remove="RecipeStudio.DataAccess\**" />
+    <None Remove="RecipeStudio.shared\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.11">     
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -55,6 +60,7 @@
   <ItemGroup>
     <ProjectReference Include="Domain\Domain.csproj" />
     <ProjectReference Include="RecipeStudio.Application\RecipeStudio.Application.csproj" />
+    <ProjectReference Include="RecipeStudio.shared\RecipeStudio.shared.csproj" />
   </ItemGroup>
 	
 

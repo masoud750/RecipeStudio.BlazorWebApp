@@ -1,0 +1,58 @@
+﻿@page "/login"
+
+<h2>Login</h2>
+@* @using RecipeStudioBlazorApp.Server.Authentification.Interfaces
+@using RecipeStudio.shared
+
+@inject IAuthService AuthService
+@inject NavigationManager Navigation
+
+<h2>Login</h2>
+
+<hr />
+
+<div style="max-width: 400px;">
+    @if (!string.IsNullOrEmpty(_errorMessage))
+    {
+        <div class="alert alert-danger">@_errorMessage</div>
+    }
+
+    
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private LoginRequest LoginRequest { get; set; }
+    private EditContext? editContext;
+    private string? _errorMessage;
+
+    protected override void OnInitialized()
+    {
+        LoginRequest ??= new();
+        editContext = new(LoginRequest);
+        editContext.OnValidationRequested += HandleLogin;
+    }
+
+    private async void HandleLogin(object? sender, ValidationRequestedEventArgs args)
+    {
+        try
+        {
+            var success = await AuthService.LoginAsync(LoginRequest);
+
+            if (success)
+                Navigation.NavigateTo("/show-user-name");
+            else
+                _errorMessage = "Invalid username or password";
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Login failed: {ex.Message}";
+        }
+    }
+
+    public void Dispose()
+    {
+        if (editContext is not null)
+            editContext.OnValidationRequested -= HandleLogin;
+    }
+} *@
