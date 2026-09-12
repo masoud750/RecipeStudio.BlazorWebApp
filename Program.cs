@@ -1,6 +1,7 @@
 using Domain.Entities;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.JSInterop;
@@ -8,9 +9,11 @@ using RecipeStudio.Application.Interfaces;
 using RecipeStudio.Application.Services;
 using RecipeStudio.DataAccess.Data;
 using RecipeStudio.Infrastructure.Repositories;
+using RecipeStudioBlazorApp.Server.Auth;
 using RecipeStudioBlazorApp.Server.Authentification;
 using RecipeStudioBlazorApp.Server.Authentification.Interfaces;
 using RecipeStudioBlazorApp.Server.Components;
+using RecipeStudioBlazorApp.Server.Endpoints;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,9 +33,13 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 
 builder.Services.AddScoped<ITokenStorageService, TokenStorageService>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 
 // Controllers (API)
-builder.Services.AddControllers();
+//builder.Services.AddControllers();
+ 
+
+
 
 // HttpClient + Auth Handler
 builder.Services.AddScoped<AuthHttpMessageHandler>();
@@ -110,5 +117,6 @@ app.UseAntiforgery();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
-
+//app.MapControllers();
+app.MapAuthEndpoints();// Add the auth endpoints
 app.Run();
