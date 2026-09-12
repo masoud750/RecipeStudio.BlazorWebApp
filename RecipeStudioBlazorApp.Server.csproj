@@ -60,7 +60,7 @@
   <ItemGroup>
     <ProjectReference Include="Domain\Domain.csproj" />
     <ProjectReference Include="RecipeStudio.Application\RecipeStudio.Application.csproj" />
-    <ProjectReference Include="RecipeStudio.shared\RecipeStudio.shared.csproj" />
+    <ProjectReference Include="RecipeStudio.shared\RecipeStudio.Shared.csproj" />
   </ItemGroup>
 	
 
