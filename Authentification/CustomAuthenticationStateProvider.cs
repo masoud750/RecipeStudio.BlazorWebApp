@@ -29,5 +29,15 @@ namespace RecipeStudioBlazorApp.Server.Auth
             var anonymousUser = new ClaimsPrincipal(new ClaimsIdentity());
             return new AuthenticationState(anonymousUser);
         }
+
+        public void NotifyUserAuthentication()
+        {
+            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+        }
+
+        public void NotifyUserLogout()
+        {
+            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+        }
     }
 }

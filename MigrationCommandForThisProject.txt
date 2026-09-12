@@ -1,0 +1,6 @@
+C:\dev\RecipeStudioBlazorApp.Server>dotnet ef migrations add CreateInit -p  RecipeStudio.DataAccess/RecipeStudio.DataAccess.csproj  -s RecipeStudioBlazorApp.Server.csproj --output-dir Migrations
+Build started...
+Build succeeded.
+Done. To undo this action, use 'ef migrations remove'
+
+C:\dev\RecipeStudioBlazorApp.Server>dotnet ef database update -p  RecipeStudio.DataAccess/RecipeStudio.DataAccess.csproj  -s RecipeStudioBlazorApp.Server.csproj

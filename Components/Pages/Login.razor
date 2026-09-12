@@ -1,35 +1,70 @@
 ﻿@page "/login"
+@rendermode InteractiveServer
 
-<h2>Login</h2>
-@* @using RecipeStudioBlazorApp.Server.Authentification.Interfaces
+@using Microsoft.AspNetCore.Components.Forms
+@using RecipeStudioBlazorApp.Server.Authentification.Interfaces
 @using RecipeStudio.shared
 
 @inject IAuthService AuthService
 @inject NavigationManager Navigation
 
 <h2>Login</h2>
-
+This page is used to demonstrate a simple login form. Enter any username and the password <i>password</i> to log in successfully.
+The login form will display an error message if the credentials are invalid.
 <hr />
 
+
 <div style="max-width: 400px;">
-    @if (!string.IsNullOrEmpty(_errorMessage))
+
+    @if (!string.IsNullOrEmpty(errorMessage))
     {
-        <div class="alert alert-danger">@_errorMessage</div>
+        <div style="color: red; margin: 10px 0;">@errorMessage</div>
     }
 
-    
+    <EditForm Model="loginRequest" OnValidSubmit="HandleLogin">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div style="margin-bottom: 15px;">
+            <label>Username:</label>
+            <InputText @bind-Value="loginRequest.UserName" class="form-control" />
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label>Password:</label>
+            <InputText @bind-Value="loginRequest.Password" type="password" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary" disabled="@isLoading">
+            @(isLoading ? "Logging in..." : "Login")
+        </button>
+    </EditForm>
 </div>
 
-@code {
-    [SupplyParameterFromForm]
-    private LoginRequest LoginRequest { get; set; }
+@code{
+    private LoginRequest loginRequest = new();
+    private string? errorMessage;
+    private bool isLoading;
+
+    private async Task HandleLogin()
+    {
+        var success = await AuthService.LoginAsync(loginRequest);
+
+        if (success)
+            Navigation.NavigateTo("/show-user-name");
+        else
+            errorMessage = "Invalid username or password";
+    }
+
+}
+@* @code {
+    private LoginRequest Model { get; set; } = new LoginRequest();
     private EditContext? editContext;
     private string? _errorMessage;
 
     protected override void OnInitialized()
     {
-        LoginRequest ??= new();
-        editContext = new(LoginRequest);
+        editContext = new EditContext(Model);
         editContext.OnValidationRequested += HandleLogin;
     }
 
@@ -37,22 +72,30 @@
     {
         try
         {
-            var success = await AuthService.LoginAsync(LoginRequest);
+            if (Model is null) return;
+
+            var success = await AuthService.LoginAsync(Model);
 
             if (success)
                 Navigation.NavigateTo("/show-user-name");
             else
+            {
                 _errorMessage = "Invalid username or password";
+                StateHasChanged();
+            }
         }
         catch (Exception ex)
         {
             _errorMessage = $"Login failed: {ex.Message}";
+            StateHasChanged();
         }
-    }
+    } *@
 
-    public void Dispose()
+@*     public void Dispose()
     {
         if (editContext is not null)
             editContext.OnValidationRequested -= HandleLogin;
     }
-} *@
+}
+ *@
+
