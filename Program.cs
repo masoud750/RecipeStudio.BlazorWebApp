@@ -1,5 +1,5 @@
 using Domain.Entities;
-using Infrastructure.Repositories;
+using Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -23,8 +23,9 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 
-builder.Services.AddDbContext<RecipeStudioDbContext>(options =>
+builder.Services.AddDbContext<RecipeStudioDbContext>((sp,options) =>
 {
+    var env = sp.GetRequiredService<IHostEnvironment>();
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 

@@ -37,10 +37,15 @@ namespace RecipeStudio.Infrastructure.Tests.Repositories
             await cmd.ExecuteNonQueryAsync();
 
             // Jetzt EF Core Context erzeugen
+
+            DesignTimeHostEnvironment hostEnv = new DesignTimeHostEnvironment()
+            {
+                EnvironmentName = "Testing"
+            };
             _dbContext = new RecipeStudioDbContext(
                 new DbContextOptionsBuilder<RecipeStudioDbContext>()
                     .UseSqlServer(connectionString)
-                    .Options
+                    .Options,hostEnv
             );
 
             await _dbContext.Database.MigrateAsync();

@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using RecipeStudio.DataAccess.Data;
 using Respawn;
@@ -16,8 +17,11 @@ namespace RecipeStudio.Infrastructure.IntegrationTests.Helpers
                 .UseSqlServer(connectionString)
                 .Options;
 
-
-            var context = new RecipeStudioDbContext(options);
+            var hostEnv = new DesignTimeHostEnvironment()
+            {
+                EnvironmentName = "Testing"
+            };
+            var context = new RecipeStudioDbContext(options,hostEnv);
            if( context.Database.EnsureCreated()) // apply schema
                 return context;
 

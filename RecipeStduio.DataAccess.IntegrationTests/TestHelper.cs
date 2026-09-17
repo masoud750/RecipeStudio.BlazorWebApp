@@ -13,8 +13,11 @@ namespace Recipe.DataAccess.IntegrationTests
             var options = new DbContextOptionsBuilder<RecipeStudioDbContext>()
                 .UseSqlite(connection)
                 .Options;
-
-            var context = new RecipeStudioDbContext(options);
+            DesignTimeHostEnvironment hostEnv = new DesignTimeHostEnvironment()
+            {
+                EnvironmentName = "Testing"
+            };
+            var context = new RecipeStudioDbContext(options, hostEnv);
             context.Database.EnsureCreated(); // apply schema
 
             return context;
