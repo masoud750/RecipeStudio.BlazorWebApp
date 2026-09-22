@@ -1,0 +1,109 @@
+﻿@using RecipeStudio.Shared.DTOs
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime;
+
+
+<dialog @ref="_dialog" class="body_dialog">
+    <div @ref="_caption" class="dialog-header">        
+            @Title        
+        <button @onclick="Close">X</button>
+    </div>
+    <div class="dialog-body">
+        <EditForm Model="_registerRequest" OnValidSubmit="RegisterUser">        
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div style="margin-bottom: 15px;">
+            <label>Username:</label>
+            <InputText @bind-Value="_registerRequest.UserName" class="form-control" />
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label>Password:</label>
+            <InputText @bind-Value="_registerRequest.Password" type="password" class="form-control" />
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <lable>Email:</lable>
+            <InputText @bind-Value="_registerRequest.Email"  class="form-control" />
+        </div>
+
+        <!-- BUTTONS RIGHT SIDE -->
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
+                    
+
+            <button type="submit" class="btn btn-primary" disabled="@IsProcessing">
+                Register
+            </button>
+        </div>
+
+    </EditForm>
+    </div>
+
+</dialog>
+
+
+@code {
+    private ElementReference _dialog;
+    private ElementReference _caption;
+    private RegisterRequest  _registerRequest= new();
+    public bool IsProcessing { get; set; } = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // After rendering the component we will be enable to run any java script.
+        if (firstRender)
+        {
+            int i = 0;
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+
+    private void RegisterUser()
+    {
+        if(_registerRequest is not null)
+        {
+            OnRegister.InvokeAsync(_registerRequest);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<RegisterRequest> OnRegister { get; set;}
+
+    private void Close()
+    {
+        OnClose.InvokeAsync();
+
+    }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    public async Task ShowDialog()
+    {
+        JSModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import",
+                        "/JS/shared-dialog.js");
+        if(JSModule is null)
+        {
+            return;
+        }
+        await JSModule.InvokeVoidAsync("showDialog", _dialog);
+    }
+
+    IJSObjectReference? JSModule;
+
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = string.Empty;
+
+    public async Task CloseDialog()
+    {
+        JSModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import",
+             "/JS/shared-dialog.js");
+        if (JSModule == null)
+            return;
+        await JSModule.InvokeVoidAsync("closeDialog", _dialog);
+    }
+
+    
+}
