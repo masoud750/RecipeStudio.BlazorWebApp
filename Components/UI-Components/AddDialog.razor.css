@@ -1,0 +1,54 @@
+/* CSS for AddDialog component */
+.custom-dialog {
+    border: none;
+    padding: 0;
+    max-width: 450px;
+    width: 100%;
+}
+
+    .custom-dialog::backdrop {
+        background-color: rgba(0,0,0,0.55);
+    }
+
+.modal-content {
+    border-radius: .6rem;
+}
+
+
+
+.modal-body {
+    padding: 1.25rem;
+}
+
+.modal-footer {
+    padding: .75rem 1.25rem;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    text-align: left;
+}
+
+/* Close-Button ohne Rand, aber X sichtbar */
+.btn-close {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    padding: .5rem;
+    margin-left: auto;
+    /* wichtig: X wieder anzeigen */
+    background-image: var(--bs-btn-close-bg) !important;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 1em;
+}

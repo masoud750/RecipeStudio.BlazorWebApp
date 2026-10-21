@@ -1,0 +1,133 @@
+﻿@using BlazorBootstrap
+@using Microsoft.JSInterop
+@using RecipeStudio.Shared.Enums
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime
+
+    <dialog @ref="_msgDialog" class="custom-dialog">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg">
+
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    @Title
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        @onclick="Close">
+                </button>
+            </div>
+
+           <div class="modal-body">
+                 <div class="mydiv" style="--dialog-color:@DialogColor"> </div>
+                @if(Visible){
+                  <div>
+                        <Icon Name="@DialogIcon"
+                            Color="@IconColour" />
+                        @Message
+                    </div>    
+                }
+
+            </div>
+            
+            <!-- BUTTONS RIGHT SIDE -->
+        <div style="display:flex; justify-content:flex-end; gap:10px;  margin:10px">                      
+          <Button Color="ButtonColor.Primary" Size="ButtonSize.Small" @onclick="Close" Class="ms-2">Close</Button>
+        </div>
+        </div>
+    </div>
+
+</dialog>
+
+
+  
+@code
+{
+    private ElementReference _msgDialog;
+
+    private IJSObjectReference? JSModule;
+
+    public string Title { get; set; } = string.Empty;
+
+    public string Message { get; set; } = string.Empty;
+
+    public bool Visible { get; private set; }
+
+    public string IconClass { get; set; } = "bi-info-circle-fill";
+
+ 
+    public OperationResult Result { get; set; }
+
+    public async Task ShowDialog(
+        string title,
+        string message,
+        OperationResult result)
+    {
+        Title = title;
+        Message = message;
+        Result = result;
+        Visible = true;
+        await InvokeAsync(StateHasChanged);
+
+        JSModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>(
+            "import",
+            "/JS/shared-dialog.js");
+
+        await JSModule.InvokeVoidAsync(
+             "showDialog",
+             _msgDialog);
+
+      
+    }
+
+    private async Task Close()
+    {
+        JSModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>(
+            "import",
+            "/JS/shared-dialog.js");
+
+        await JSModule.InvokeVoidAsync(
+            "closeDialog",
+            _msgDialog);
+
+        Visible = false;
+    }
+
+   
+
+
+    // property
+   private IconName DialogIcon => Result switch
+{
+    OperationResult.Success => IconName.CheckCircleFill,
+    OperationResult.AlreadyExists => IconName.ExclamationTriangleFill,
+    OperationResult.Error => IconName.XCircleFill,
+    _ => IconName.InfoCircleFill
+};
+
+private string DialogColor => Result switch
+{
+    OperationResult.Success => "green",
+    OperationResult.AlreadyExists => "orange",
+    OperationResult.Error => "red",
+    _ => "blue"
+};
+
+private IconColor IconColour => Result switch
+{
+    OperationResult.Success       => IconColor.Primary,
+    OperationResult.AlreadyExists => IconColor.Warning,
+    OperationResult.Error         => IconColor.Danger,
+    _                             => IconColor.Info
+};
+
+// private string DialogCssClass => Result switch
+// {
+//     OperationResult.Success => "success-box",
+//     OperationResult.AlreadyExists => "warning-box",
+//     OperationResult.Error => "error-box",
+//     _ => "info-box"
+// };
+}
