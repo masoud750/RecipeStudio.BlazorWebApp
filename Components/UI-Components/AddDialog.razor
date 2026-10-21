@@ -1,22 +1,53 @@
 ﻿@using Microsoft.JSInterop
+@using RecipeStudio.Shared.DTOs.Commands
+@rendermode InteractiveServer
+
+
 @inject IJSRuntime JSRuntime
 
- <dialog @ref="_dialog" class="body-dialog">
-    <div @ref="_caption" class="dialog-header">        
-            @Title        
-        <button @onclick="Close">X</button>
-    </div>
+<dialog @ref="_dialog" class="custom-dialog">
+      <div class="modal-dialog modal-dialog-centered">
+             <div class="modal-content shadow-lg">
+            <!-- HEADER -->
+            <div @ref="_caption" class="modal-header">
+                <h5 class="modal-title">@Title</h5>
+                <button type="button" class="btn-close" @onclick="Close"></button>
+            </div>
+            <!--Body-->
+             <div class="modal-body">
+                 <EditForm EditContext="_editContext"  OnValidSubmit="HandleAddItem" FormName="AddItemForm">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+            
+    <div class="mb-3">
+                        <label class="form-label">Name:</label>
+                        <InputText  @bind-Value="Item.Name" class="form-control" />
+             </div>
 
-    <div class="dialog-body">
-        <label>Name:</label>
-        <input type="text" />
-    </div>
+ 
+         
 
-    <div class="dialog-footer">
-        <button @onclick="Close" class="close-btn">Close</button>
-        <button @onclick="AddItem" class="add-btn">Add</button>
-    </div>
+    <!-- BUTTONS RIGHT SIDE -->
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
+            
+
+            <button type="button" class="btn"
+                    style="background-color:seagreen; color:white;"
+                    @onclick="Close">
+                Cancel
+            </button>
+
+            <button type="submit" class="btn btn-primary" disabled="@_isLoading">
+                Add
+            </button>
+        </div>
+  </EditForm>
+  </div>
+  </div>
+  </div>
 </dialog>
+ 
+
  
 
 
@@ -24,7 +55,21 @@
 
     private ElementReference _dialog;
     private ElementReference _caption;
-    private ElementReference _nameInput;
+    private EditContext _editContext = default!;
+    private string Name { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = string.Empty;
+
+    public AddCategoryCommand Item { get; set; } = new();
+
+    private bool _isLoading = false;
+    protected override void OnInitialized()
+    {
+        
+        _editContext = new EditContext(Item);
+        base.OnInitialized();
+    }
 
     private void Close()
     {
@@ -37,13 +82,14 @@
     }
 
 
-    public void AddItem()
+    public void HandleAddItem()
     {
-        OnAdd.InvokeAsync(_nameInput.ToString());
+        
+        OnAdd.InvokeAsync(Item);
     }
 
     [Parameter]
-    public EventCallback<string> OnAdd
+    public EventCallback<AddCategoryCommand> OnAdd
     {
         get; set;
     }
@@ -58,9 +104,12 @@
 
     public async Task ShowDialog()
     {
+        Item = new AddCategoryCommand();
+        _editContext = new EditContext(Item);
+        StateHasChanged();
         JSModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import",
             "/JS/shared-dialog.js");
-        if (JSModule == null)
+        if (JSModule is null)
             return;
         await JSModule.InvokeVoidAsync("showDialog", _dialog);
         Visible = true;
@@ -79,19 +128,32 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+      
         if (firstRender)
         {
-         
+
             JSModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import",
                 "/JS/shared-dialog.js");
-            if (JSModule == null)
+            if (JSModule == null )
                 return;
-            await JSModule.InvokeVoidAsync("makeDraggable", _dialog, _caption); 
-            
+             await JSModule.InvokeVoidAsync("makeDraggable", _dialog, _caption); 
+
         }
-        await base.OnAfterRenderAsync(firstRender);
+          await base.OnAfterRenderAsync(firstRender);
     }
 
-    [Parameter, EditorRequired]
-    public string Title { get; set; } = string.Empty;
+   public async ValueTask DisposeAsync()
+{
+    if (JSModule is not null)
+    {
+        try
+        {
+            await JSModule.DisposeAsync();
+        }
+        catch (JSDisconnectedException)
+        {
+        }
     }
+}
+    
+        }

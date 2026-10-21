@@ -1,7 +1,12 @@
 ﻿using Domain.Entities;
 using RecipeStudio.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
-using Infrastructure.Repositories;
+using RecipeStudio.Application.Interfaces;
+using RecipeStudio.Application.Common.Interfaces;
+
+
+using NLog;
+using System.ClientModel.Primitives;
 
 
 namespace RecipeStudio.Infrastructure.Repositories
@@ -9,20 +14,50 @@ namespace RecipeStudio.Infrastructure.Repositories
     public class CategoryRepository : IRepository<Category>
     {
 
-        public CategoryRepository(RecipeStudioDbContext dbContext) 
+        public CategoryRepository(RecipeStudioDbContext dbContext,IAppLogger logger) 
         {
             ArgumentNullException.ThrowIfNull(dbContext, nameof(dbContext));
+            ArgumentNullException.ThrowIfNull(logger);
             _dbContext = dbContext;
+            _logger = logger;
+
         }
      
 
         private RecipeStudioDbContext _dbContext;
-        public Task AddAsync(Category entity)
-        {
-            ArgumentNullException.ThrowIfNull(entity, nameof(entity));
-            throw new NotImplementedException(); 
-        }
-        
+        private IAppLogger _logger;
+
+public async Task<RecipeStudio.Shared.Enums.OperationResult> AddAsync(Category entity)
+{
+    try
+    {
+        ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+        entity.Name = entity.Name.ToLowerInvariant();
+                entity.ValidFrom = DateTime.UtcNow;
+                entity.ValidTo = new DateTime(2099, 12, 01);
+      
+        await _dbContext.AddAsync(entity);
+        await _dbContext.SaveChangesAsync();
+    }
+    catch (DbUpdateException ex)
+    {
+        _logger.LogWarning(ex, "Adding new category failed.");
+        _dbContext.Entry(entity).State = EntityState.Detached;
+        return RecipeStudio.Shared.Enums.OperationResult.AlreadyExists;
+    }
+    catch (Exception ex)
+    {
+        _logger.LogWarning(ex, "Adding new category failed.");
+                _dbContext.Entry(entity).State = EntityState.Detached;
+                return RecipeStudio.Shared.Enums.OperationResult.Error;
+    }
+
+    return RecipeStudio.Shared.Enums.OperationResult.Success;
+}
+
+           
+       
+
 
         public async Task DeleteAsync(Category entity)
         {
@@ -55,5 +90,6 @@ namespace RecipeStudio.Infrastructure.Repositories
             return true;
 
         }
+
     }
 }

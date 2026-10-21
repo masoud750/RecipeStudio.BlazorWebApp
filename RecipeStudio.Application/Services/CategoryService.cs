@@ -1,40 +1,97 @@
 ﻿using Domain.Entities;
-using Infrastructure.Repositories;
 using RecipeStudio.Application.Interfaces;
+
+using RecipeStudio.Shared.DTOs.Commands;
+using RecipeStudio.Shared.DTOs;
+using RecipeStudio.Shared.Enums;
+using RecipeStudio.Application.Common.Interfaces;
+
+
 
 namespace RecipeStudio.Application.Services
 {
     public class CategoryService : ICategoryService
     {
-        public CategoryService(IRepository<Category> repos) {
-             ArgumentNullException.ThrowIfNull(repos,nameof(repos));
+        public CategoryService(IRepository<Category> repos,IAppLogger logger)
+        {
+            ArgumentNullException.ThrowIfNull(repos, nameof(repos));
+            ArgumentNullException.ThrowIfNull(logger, nameof(logger));
             _categoryRepos = repos;
+            _logger = logger;
         }
 
-        IRepository<Category> _categoryRepos;
-        public async Task<List<Category>> GetAllAsync()
+        private IRepository<Category> _categoryRepos;
+        private IAppLogger _logger;
+        public async Task<List<ItemDTO>> GetAllAsync()
         {
             //throw new NotImplementedException();
             List<Category> categories = new List<Category>();
-            categories = await _categoryRepos.GetAllAsync();           
-            return categories.ToList();
+            categories = await _categoryRepos.GetAllAsync();
+            List<ItemDTO> categoryItemDTOs = new();
+            foreach (var item in categories.ToList())
+            {
+                categoryItemDTOs.Add(new
+                     ItemDTO(item.Id, item.Name, ItemType.Category));
+            }
+            return categoryItemDTOs.ToList();
         }
 
-        public async Task<Category?> GetByIdAsync(int id)
+        public async Task<ItemDTO?> GetByIdAsync(int id)
         {
             Category? category = await _categoryRepos.GetByIdAsync(id);
-            return category;
+            return (category is null) ? null :
+                new ItemDTO(category.Id, category.Name, ItemType.Category);
         }
 
-        public async Task DeleteAsync(Category category)
+
+
+        public async Task<bool> ExistAsync(ExistCategoryCommand category)
         {
-            await _categoryRepos.DeleteAsync(category);
-           
+            ArgumentNullException.ThrowIfNull(category, nameof(category));
+            return await _categoryRepos.ExistAsync(
+                 new Category()
+                 {
+                     Id = category.Id,
+                     Name = category.Name
+                 });
+
         }
 
-        public async Task<bool> ExistAsync(Category category)
+
+        public async Task<OperationResult> AddAsync(AddCategoryCommand category)
         {
-            return await _categoryRepos.ExistAsync(category);
+            ArgumentNullException.ThrowIfNull(category, nameof(category));
+            string name = category.Name;
+            var item = new Category()
+            {
+                Name = name.Normalize()
+            };
+
+
+            try
+            {
+                return await _categoryRepos.AddAsync(item);
+                
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    $"An error occurred while adding category '{category.Name}'.");
+
+                return OperationResult.Error;
+            }
+
+        }
+
+
+
+        public async Task DeleteAsync(DeleteCategoryCommand category)
+        {
+            ArgumentNullException.ThrowIfNull(category);
+            await _categoryRepos.DeleteAsync(new Category()
+            {
+                Name = category.Name
+            });
         }
     }
 }

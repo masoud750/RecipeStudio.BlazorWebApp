@@ -2,6 +2,7 @@
 {
     public class Category : EntityBase, IEquatable<Category>
     {
+
         public string Name { get; set; } = string.Empty;
 
         // Navigation

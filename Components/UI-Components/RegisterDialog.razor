@@ -2,69 +2,85 @@
 @using Microsoft.JSInterop
 @inject IJSRuntime JSRuntime;
 
+<dialog @ref="_dialog" class="custom-dialog">
 
-<dialog @ref="_dialog" class="body_dialog">
-    <div @ref="_caption" class="dialog-header">        
-            @Title        
-        <button @onclick="Close">X</button>
-    </div>
-    <div class="dialog-body">
-        <EditForm Model="_registerRequest" OnValidSubmit="RegisterUser">        
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg">
 
-        <div style="margin-bottom: 15px;">
-            <label>Username:</label>
-            <InputText @bind-Value="_registerRequest.UserName" class="form-control" />
+            <!-- HEADER -->
+            <div class="modal-header">
+                <h5 class="modal-title">@Title</h5>
+                <button type="button" class="btn-close" @onclick="Close"></button>
+            </div>
+
+            <!-- BODY -->
+            <div class="modal-body">
+
+                <EditForm EditContext="_editContext" OnValidSubmit="RegisterUser" FormName="Register">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <InputText @bind-Value="_model.UserName" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <InputText @bind-Value="_model.Password" type="password" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <InputText @bind-Value="_model.Email" class="form-control" />
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" disabled="@IsProcessing">
+                            Register
+                        </button>
+                    </div>
+                </EditForm>
+
+            </div>
+
         </div>
-
-        <div style="margin-bottom: 15px;">
-            <label>Password:</label>
-            <InputText @bind-Value="_registerRequest.Password" type="password" class="form-control" />
-        </div>
-
-        <div style="margin-bottom: 15px;">
-            <lable>Email:</lable>
-            <InputText @bind-Value="_registerRequest.Email"  class="form-control" />
-        </div>
-
-        <!-- BUTTONS RIGHT SIDE -->
-        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
-                    
-
-            <button type="submit" class="btn btn-primary" disabled="@IsProcessing">
-                Register
-            </button>
-        </div>
-
-    </EditForm>
     </div>
 
 </dialog>
 
 
+
+
+
 @code {
     private ElementReference _dialog;
     private ElementReference _caption;
-    private RegisterRequest  _registerRequest= new();
+    private EditContext _editContext = default!;
+    private RegisterRequest _model = new();
+
+    // private RegisterRequest?  Model { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _editContext = new EditContext(_model);
+        base.OnInitialized();
+    }
     public bool IsProcessing { get; set; } = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         // After rendering the component we will be enable to run any java script.
-        if (firstRender)
-        {
-            int i = 0;
-        }
+   
         await base.OnAfterRenderAsync(firstRender);
     }
 
 
     private void RegisterUser()
     {
-        if(_registerRequest is not null)
+        if(_editContext.Model is not null)
         {
-            OnRegister.InvokeAsync(_registerRequest);
+            OnRegister.InvokeAsync();
         }
     }
 
@@ -82,16 +98,21 @@
 
     public async Task ShowDialog()
     {
+        _model = new RegisterRequest();
+        _editContext = new EditContext(_model);
+        StateHasChanged();
         JSModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import",
                         "/JS/shared-dialog.js");
         if(JSModule is null)
         {
             return;
         }
+       
         await JSModule.InvokeVoidAsync("showDialog", _dialog);
     }
 
     IJSObjectReference? JSModule;
+
 
     [Parameter, EditorRequired]
     public string Title { get; set; } = string.Empty;
@@ -102,8 +123,10 @@
              "/JS/shared-dialog.js");
         if (JSModule == null)
             return;
+
         await JSModule.InvokeVoidAsync("closeDialog", _dialog);
     }
 
-    
+
+
 }

@@ -6,6 +6,7 @@ using Respawn;
 using System.Data.Common;
 using Domain.Entities;
 using System.Runtime.CompilerServices;
+using RecipeStudio.Infrastructure.Tests.Mocks;
 namespace RecipeStudio.Infrastructure.Tests.Repositories
 {
     [TestFixture]
@@ -23,7 +24,7 @@ namespace RecipeStudio.Infrastructure.Tests.Repositories
         {
             _dbName = $"RecipeStudio_Infrastructure_IntegrationTests_{Guid.NewGuid()}";
 
-            var connectionString = $"Server=.;Database={_dbName};" +
+             _connectionString = $"Server=.;Database={_dbName};" +
                 $"Trusted_Connection=True;TrustServerCertificate=True;";
 
             using var connection = new SqlConnection(
@@ -44,7 +45,7 @@ namespace RecipeStudio.Infrastructure.Tests.Repositories
             };
             _dbContext = new RecipeStudioDbContext(
                 new DbContextOptionsBuilder<RecipeStudioDbContext>()
-                    .UseSqlServer(connectionString)
+                    .UseSqlServer(_connectionString)
                     .Options,hostEnv
             );
 
@@ -93,7 +94,8 @@ namespace RecipeStudio.Infrastructure.Tests.Repositories
         [Test]
         public void Constructor_WhenDbcontextIsNull_ThrowsArgumentNullException()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => new CategoryRepository(null!));
+            var ex = Assert.Throws<ArgumentNullException>(() => new CategoryRepository(null!,
+                new LoggerMock()));
             Assert.That(ex.ParamName, Is.EqualTo("dbContext"));
         }
 
@@ -102,7 +104,7 @@ namespace RecipeStudio.Infrastructure.Tests.Repositories
         {
             // Arrange
 
-            var repository = new CategoryRepository(_dbContext!);
+            var repository = new CategoryRepository(_dbContext!,new LoggerMock());
             // Act & Assert
             var ex = Assert.ThrowsAsync<ArgumentNullException>(async () => await repository.AddAsync(null!));
             Assert.That(ex.ParamName, Is.EqualTo("entity"));
@@ -116,7 +118,7 @@ namespace RecipeStudio.Infrastructure.Tests.Repositories
                 Name = "Test",
             };
 
-            var sut = new CategoryRepository(_dbContext!);
+            var sut = new CategoryRepository(_dbContext!,new LoggerMock());
             await sut.AddAsync(entity);
 
 
@@ -128,7 +130,7 @@ namespace RecipeStudio.Infrastructure.Tests.Repositories
 
             var ex = Assert.ThrowsAsync<ArgumentNullException>(async () =>
             {
-                var sut = new CategoryRepository(_dbContext!);
+                var sut = new CategoryRepository(_dbContext!,new LoggerMock());
                 _ = await sut.ExistAsync(null!);
 
             });
@@ -143,7 +145,7 @@ namespace RecipeStudio.Infrastructure.Tests.Repositories
             /// <see cref="RecipeStudioDbContext"/>
             var category = new Category() { Id = 2, Name = "Thahi" };
 
-            var sut = new CategoryRepository(_dbContext!);
+            var sut = new CategoryRepository(_dbContext!,new LoggerMock());
             bool result = await sut.ExistAsync(category);
             Assert.That(result, Is.True);
 
@@ -152,17 +154,17 @@ namespace RecipeStudio.Infrastructure.Tests.Repositories
         [Test]
         public async Task DeleteAsync_WhenEntityIsNull_ShouldThrowArgNullEx()
         {
-            var sut = new CategoryRepository(_dbContext!);
+            var sut = new CategoryRepository(_dbContext!, new LoggerMock());
             var ex = Assert.ThrowsAsync<ArgumentNullException>(async () =>
              await sut.DeleteAsync(null!));
             Assert.That(ex.ParamName, Is.EqualTo("entity"));
         }
         [Test]
-        public async Task DeleteAsync_DeleteExitingEntity_ExisingingAsyncShouldReturnFalse()
+        public async Task DeleteAsync_DeleteExitingEntity_ShouldReturnFalse()
         {
             /// <see cref="RecipeStudioDbContext"/>
             var category = new Category() { Id = 2, Name = "Thahi" };
-            var sut = new CategoryRepository(_dbContext!);
+            var sut = new CategoryRepository(_dbContext!, new LoggerMock());
             await sut.DeleteAsync(category);
             Assert.That(await sut.ExistAsync(category), Is.False);
         }
@@ -170,7 +172,7 @@ namespace RecipeStudio.Infrastructure.Tests.Repositories
         [Test]
         public async Task GetAllAsync_ShouldReturnAllCategories()
         {
-            var sut = new CategoryRepository(_dbContext!);
+            var sut = new CategoryRepository(_dbContext!, new LoggerMock());
             var categories = await sut.GetAllAsync();
             Assert.That(categories, Is.Not.Null);
             Assert.That(categories.Count, Is.EqualTo(10));

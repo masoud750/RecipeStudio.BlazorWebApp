@@ -1,5 +1,6 @@
-﻿using Infrastructure.Repositories;
-using Domain.Entities;
+﻿using Domain.Entities;
+using RecipeStudio.Application.Interfaces;
+using RecipeStudio.Shared.Enums;
 
 namespace RecipeStudio.Application.Tests.Mocks
 {
@@ -11,7 +12,7 @@ namespace RecipeStudio.Application.Tests.Mocks
                 new Category { Id = 2, Name = "Test Category 2" },            
                 new Category { Id = 3, Name = "Test Category 3" },
             };
-public Task AddAsync(Category entity)
+public Task<OperationResult> AddAsync(Category entity)
         {
             throw new NotImplementedException();
         }
@@ -42,6 +43,8 @@ public Task AddAsync(Category entity)
         {
             throw new NotImplementedException();
         }
+
+       
     }
 }
     

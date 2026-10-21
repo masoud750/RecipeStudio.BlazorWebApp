@@ -1,10 +1,13 @@
 ﻿@page "/Categories"
 @rendermode InteractiveServer
-@using Domain.Entities
-@using RecipeStudioBlazorApp.Server.Components.UI_Components
 @using RecipeStudio.Application.Interfaces
+@using RecipeStudio.Shared.DTOs
+@using RecipeStudio.Shared.Enums
+@using RecipeStudio.Shared.DTOs.Commands
+@using RecipeStudioBlazorApp.Server.Components.UI_Components
+@using MudBlazor;
 @inject ICategoryService _categoryService
-
+@inject IDialogService DialogService
 <PageTitle>Categories</PageTitle>
 <h1>Categories</h1>
 
@@ -22,7 +25,10 @@
                     <tr>
                         <td><b>No</b></td>
                         <td><b>Categories</b></td>
-                        <td><button @onclick="()=>ExecuteAction(MenuItems[0])" class="add-btn">+</button></td>
+                        <td>
+                            <button @onclick="() => ExecuteAction(MenuItems[0])" class="btn btn-primary">+</button>
+
+                        </td>
                     </tr>
                 </thead>
                 <tbody>
@@ -32,18 +38,18 @@
                     @foreach (var category in _categories!)
                     {
                         _index++;
-                        <tr >
+                        <tr>
                             <td>@_index</td>
                             <td @oncontextmenu:preventDefault="true"
                                 @oncontextmenu:stopPropagation="true"
                                 @oncontextmenu="(e => ShowContextMenu(category, e))">
                                 @category.Name
                             </td>
-                            <td/>
-                           
+                            <td />
 
-                        </tr>                       
-                    } 
+                           
+                        </tr>
+                    }
                 </tbody>
             </table>
 
@@ -52,36 +58,40 @@
         }
 
     </div>
-   
+
    
     <div id="SecondLayout"></div>
 </div>
 
 <ContextMenu MenuItems="MenuItems"
-Visible="IsMenuVisible"
-X="MenuXpx"
-Y="MenuYpx"
-CurrentItem="CurrentItem"
-OnAction="ExecuteAction" />
+             Visible="IsMenuVisible"
+             X="MenuXpx"
+             Y="MenuYpx"
+             CurrentItem="CurrentItem"
+             OnAction="ExecuteAction" />
+
 <AddDialog @ref="_addDialog"
-        
            OnAdd="AddCategory"
            OnClose="CloseAddDialog"
            Title=@Title />
 <EditDialog @ref="_editDialog"
-          
             OnUpdateItem="UpdateCategory"
             OnClose="CloseEditDialog"
             Title=@Title
             Name=@CurrentItem?.Name />
+<MessageDialog @ref="_msgDialog"></MessageDialog>
+
+
 
 @code {
 
-    private List<Category>? _categories;
+    private List<ItemDTO>? _categories;
     private int _index;
-    private Dictionary<string, Func<Category, Task>>? MenuActions;
+    private Dictionary<string, Func<object, Task>>? MenuActions;
     private AddDialog? _addDialog;
     private EditDialog? _editDialog;
+    private MessageDialog? _msgDialog;
+    private MudMessageBox _mudMessageBox;
     private List<string> MenuItems = new() { "Add", "Delete", "Edit" };
     public string Title { get; set; } = string.Empty;
     private bool Visible { get; set; }
@@ -91,12 +101,11 @@ OnAction="ExecuteAction" />
                 {
                     { "Delete", async (s) =>
                         {
-                            if (s != null)
+                            if (s != null && s is DeleteCategoryCommand cmd )
                             {
-                                await _categoryService.DeleteAsync(s);
+                                await _categoryService.DeleteAsync(cmd);
 
-
-                                    _categories?.Remove(s);
+                                    _categories?.Remove(new ItemDTO(cmd.id,cmd.Name,ItemType.Category));
 
                             }
                         }
@@ -125,7 +134,7 @@ OnAction="ExecuteAction" />
         IsMenuVisible = false;
     }
 
-    public void ShowContextMenu(Category? item, MouseEventArgs args)
+    public void ShowContextMenu(ItemDTO? item, MouseEventArgs args)
     {
         if (item == null)
             return;
@@ -138,9 +147,10 @@ OnAction="ExecuteAction" />
     private bool IsMenuVisible;
     private int MenuXpx = 0;
     private int MenuYpx = 0;
-    public Category? CurrentItem;
+    public ItemDTO? CurrentItem;
 
-    private void Delete(Category currentItem)
+
+    private void Delete(ItemDTO currentItem)
     {
         Console.WriteLine("ttt");
         IsMenuVisible = false;
@@ -153,10 +163,41 @@ OnAction="ExecuteAction" />
 
     }
 
-    private void AddCategory(string name)
+    private async Task AddCategory(AddCategoryCommand item)
     {
 
+        ArgumentNullException.ThrowIfNull(item, nameof(item));
+        OperationResult result = await _categoryService.AddAsync(item);
+        if (_msgDialog is not null)
+        {
+            switch (result)
+            {
+                case OperationResult.Success:
+                    await _msgDialog.ShowDialog(
+                        "Add Category",
+                        $"Category '{item.Name}' was inserted successfully.",
+                        result);
+                    break;
+
+                case OperationResult.AlreadyExists:
+                    await _msgDialog.ShowDialog(
+                        "Warning",
+                        $"Category '{item.Name}' already exists.",
+                        result);
+                    break;
+
+                case OperationResult.Error:
+                    await _msgDialog.ShowDialog(
+                        "Error",
+                        $"An error occurred while adding category '{item.Name}'.",
+                        result);
+                    break;
+            }
+        }
+
     }
+
+ 
 
     private void OpenAddDialog()
     {
@@ -168,11 +209,13 @@ OnAction="ExecuteAction" />
 
     private async Task CloseEditDialog()
     {
-        await _editDialog?.CloseDialog()!; 
+        await _editDialog?.CloseDialog()!;
     }
 
     private void UpdateCategory(string name)
     {
         throw new NotImplementedException();
     }
+
+   
 }
