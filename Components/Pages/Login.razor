@@ -1,61 +1,138 @@
 ﻿@page "/login"
 @rendermode InteractiveServer
-
+@using RecipeStudioBlazorApp.Server.Components.UI_Components
 @using Microsoft.AspNetCore.Components.Forms
-@using RecipeStudioBlazorApp.Server.Authentification.Interfaces
-@using RecipeStudio.shared
-
+@using RecipeStudio.Shared.DTOs
+@using RecipeStudio.Application.Interfaces
 @inject IAuthService AuthService
+@inject IRegisterService RegisterService
 @inject NavigationManager Navigation
 
-<h2>Login</h2>
-This page is used to demonstrate a simple login form. Enter any username and the password <i>password</i> to log in successfully.
-The login form will display an error message if the credentials are invalid.
+    <h2>Login</h2>
+    <div>
+        This page is used to demonstrate a simple login form. Enter any username and the <i>password</i> to log in successfully.
+        The login form will display an error message if the credentials are invalid.
+    </div>
 <hr />
 
 
-<div style="max-width: 400px;">
-
-    @if (!string.IsNullOrEmpty(errorMessage))
+<div style="width:33%;">
+    @if (!string.IsNullOrEmpty(_errorMessage))
     {
-        <div style="color: red; margin: 10px 0;">@errorMessage</div>
+        <div style="color: red; margin: 10px 0;">@_errorMessage</div>
     }
 
-    <EditForm Model="loginRequest" OnValidSubmit="HandleLogin">
+    <EditForm Model="_loginRequest" OnValidSubmit="HandleLogin">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
         <div style="margin-bottom: 15px;">
             <label>Username:</label>
-            <InputText @bind-Value="loginRequest.UserName" class="form-control" />
+            <InputText @bind-Value="_loginRequest.UserName" class="form-control" />
         </div>
 
         <div style="margin-bottom: 15px;">
             <label>Password:</label>
-            <InputText @bind-Value="loginRequest.Password" type="password" class="form-control" />
+            <InputText @bind-Value="_loginRequest.Password" type="password" class="form-control" />
         </div>
 
-        <button type="submit" class="btn btn-primary" disabled="@isLoading">
-            @(isLoading ? "Logging in..." : "Login")
-        </button>
+        <!-- BUTTONS RIGHT SIDE -->
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
+            
+
+            <button type="button" class="btn"
+                    style="background-color:seagreen; color:white;"
+                    @onclick="OpenRegDialog">
+                Register
+            </button>
+
+            <button type="submit" class="btn btn-primary" disabled="@_isLoading">
+                @(_isLoading ? "Logging in..." : "Login")
+            </button>
+        </div>
+
     </EditForm>
+
 </div>
 
-@code{
-    private LoginRequest loginRequest = new();
-    private string? errorMessage;
-    private bool isLoading;
+<RegisterDialog @ref="_regDialog"
+           OnRegister="RegisterUser"
+           OnClose="CloseRegDialog" 
+           Title=@Title />
 
+
+
+
+@code{
+    private LoginRequest _loginRequest = new();
+    private string? _errorMessage;
+    private bool _isLoading = false;
+    private bool _isRegistering = false;
+    private RegisterDialog _regDialog;
+    private string Title { get; set; } = "Register";
     private async Task HandleLogin()
     {
-        var success = await AuthService.LoginAsync(loginRequest);
+        try
+        {
+            _isLoading = true;
+            var success = await AuthService.LoginAsync(_loginRequest);
 
-        if (success)
-            Navigation.NavigateTo("/show-user-name");
-        else
-            errorMessage = "Invalid username or password";
+            if (success)
+            {
+                _isLoading = false;
+                Navigation.NavigateTo("/show-user-name");
+            }
+
+            else
+                _errorMessage = "Invalid username or password";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+
     }
 
+
+
+    private async Task RegisterUser(RegisterRequest args)
+    {
+        if (args is null) return;
+
+        _isRegistering = true;
+        try
+        {
+            var success = await RegisterService
+                               .RegisterUserServicesAsync(args);
+
+            if (success != null)
+            {
+                _isRegistering = false;
+                await _regDialog.CloseDialog();
+                Navigation.NavigateTo($"/register/{args.UserName}");
+            }
+
+            else
+                _errorMessage = "Invalid username or password";
+        }
+        finally
+        {
+            _isRegistering = false;
+        }   
+
+
+    }
+
+    private async Task  OpenRegDialog()
+    {
+        await _regDialog?.ShowDialog();
+    }
+
+    private async Task CloseRegDialog()
+    {
+       
+        await _regDialog.CloseDialog();
+    }
 }
 @* @code {
     private LoginRequest Model { get; set; } = new LoginRequest();
