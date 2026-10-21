@@ -1,4 +1,5 @@
 ﻿@using Domain.Entities
+@using RecipeStudio.Shared.DTOs
 
 @if (Visible)
 {
@@ -18,7 +19,7 @@
     [Parameter] public bool Visible { get; set; }
     [Parameter] public int X { get; set; }
     [Parameter] public int Y { get; set; }
-    [Parameter] public EntityBase? CurrentItem { get; set; }
+    [Parameter] public ItemDTO CurrentItem { get; set; }
 
     [Parameter] public EventCallback<string> OnAction { get; set; }
 }

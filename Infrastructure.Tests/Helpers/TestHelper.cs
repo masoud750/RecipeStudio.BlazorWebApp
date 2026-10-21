@@ -28,6 +28,29 @@ namespace RecipeStudio.Infrastructure.IntegrationTests.Helpers
            throw new Exception("Failed to create the database context.");
         }
 
-      
+        public static async Task DisposeAsync(RecipeStudioDbContext dbContext, string dbName)
+        {
+            ArgumentNullException.ThrowIfNull(dbContext, nameof(dbContext));
+            ArgumentException.ThrowIfNullOrEmpty(dbName, nameof(dbName));
+            // frist close the Test-DB
+            await dbContext.DisposeAsync();
+
+            using var connection = new SqlConnection(
+                "Server=.;Database=master;Trusted_Connection=True;TrustServerCertificate=True;"
+            );
+
+            await connection.OpenAsync();
+
+            var cmd = connection.CreateCommand();
+            cmd.CommandText = $@"
+            IF EXISTS (SELECT name FROM sys.databases WHERE name = '{dbName}')
+            BEGIN
+                ALTER DATABASE [{dbName}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+                DROP DATABASE [{dbName}];
+            END";
+
+
+            await cmd.ExecuteNonQueryAsync();
+        }
     }
 }
