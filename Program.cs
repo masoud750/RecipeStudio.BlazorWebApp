@@ -1,21 +1,27 @@
 using Domain.Entities;
-using Infrastructure.Interfaces;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.EntityFrameworkCore;
+using RecipeStudio.Infrastructure.Authentification;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.JSInterop;
+using RecipeStudio.Infrastructure.Repositories;
+using RecipeStudio.Application.Common.Interfaces;
 using RecipeStudio.Application.Interfaces;
 using RecipeStudio.Application.Services;
-using RecipeStudio.DataAccess.Data;
-using RecipeStudio.Infrastructure.Repositories;
-using RecipeStudioBlazorApp.Server.Auth;
+using RecipeStudio.Infrastructure.Logging;
+
 using RecipeStudioBlazorApp.Server.Authentification;
-using RecipeStudioBlazorApp.Server.Authentification.Interfaces;
+
 using RecipeStudioBlazorApp.Server.Components;
 using RecipeStudioBlazorApp.Server.Endpoints;
-using System.Text;
+using RecipeStudio.DataAccess.Data;
 
+using System.Text;
+using Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
+using RecipeStudio.Infrastructure;
+using Microsoft.Fast.Components.FluentUI;
+using MudBlazor;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -30,11 +36,21 @@ builder.Services.AddDbContext<RecipeStudioDbContext>((sp,options) =>
 });
 
 builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICategoryService,CategoryService>();
+builder.Services.AddScoped<IRepository<User>, UserRepository>();
+builder.Services.AddScoped<MudBlazor.IDialogService, MudBlazor.DialogService>();
 
+//log
+
+builder.Services.AddScoped<IAppLogger, NLogLogger>();
 
 builder.Services.AddScoped<ITokenStorageService, TokenStorageService>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+builder.Services.AddScoped<IRegisterService, RegisterService>();
+builder.Services.AddScoped<IUserRegisterService, UserRegisterService>();
+
+
+
 
 // Controllers (API)
 //builder.Services.AddControllers();
@@ -106,8 +122,9 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseExceptionHandler("/Error", 
+                                createScopeForErrors: true);
+    // The default HSTS (HSTS = HTTP Strict Transport Security) value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
@@ -119,5 +136,6 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 //app.MapControllers();
-app.MapAuthEndpoints();// Add the auth endpoints
+app.MapAuthEndpoint();// Add the auth endpoints
+app.MapRegisterEndpoint();
 app.Run();
