@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Domain.Entities;
+using RecipeStudio.Shared.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Infrastructure.Interfaces
+namespace RecipeStudio.Application.Interfaces
 {
     public interface IRepository <T> where T : class
     {
@@ -14,8 +16,8 @@ namespace Infrastructure.Interfaces
 
         public Task<List<T>> GetAllAsync();
          
-        Task AddAsync(T entity);
-      
+        Task<OperationResult> AddAsync(T entity);
+       
         Task DeleteAsync(T entity);
 
         Task<bool> ExistAsync(T entity);
