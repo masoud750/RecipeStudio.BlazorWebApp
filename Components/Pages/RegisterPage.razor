@@ -1,0 +1,10 @@
+﻿@page "/register/{UserName}"
+@rendermode InteractiveServer
+
+<h3> @UserName.ToUpperInvariant(), Welcom to Recipe Studio</h3>
+
+@code {
+    [Parameter]         
+    public string UserName { get; set; } = "Loading...";
+
+}
