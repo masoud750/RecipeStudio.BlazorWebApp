@@ -7,6 +7,8 @@
   <Project Path="RecipeStudio.Application.Tests/RecipeStudio.Application.Tests.csproj" Id="a91ca3b1-0385-4df8-aa93-1bc15e219c5d" />
   <Project Path="RecipeStudio.Application/RecipeStudio.Application.csproj" Id="c0f0867e-a7a5-45fb-9fbb-fa499e25fec0" />
   <Project Path="RecipeStudio.DataAccess/RecipeStudio.DataAccess.csproj" />
-  <Project Path="RecipeStudio.shared/RecipeStudio.shared.csproj" DisplayName="RecipeStudio.Shared" />
+  <Project Path="RecipeStudio.Infrastructure.Tests/RecipeStudio.Infrastructure.Tests.csproj" Id="cdc93471-815d-40e6-b835-b3efbb7f81e8" />
+  <Project Path="RecipeStudio.Shared.Tests/RecipeStudio.Shared.Tests.csproj" Id="6eda7dd0-b6ab-48c1-ad1d-135ef90519ca" />
+  <Project Path="RecipeStudio.shared/RecipeStudio.shared.csproj" />
   <Project Path="RecipeStudioBlazorApp.Server.csproj" />
 </Solution>

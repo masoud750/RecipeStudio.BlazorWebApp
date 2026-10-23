@@ -1,6 +1,11 @@
 ﻿@page "/Recipes"
 @using Domain.Entities
 @using RecipeStudioBlazorApp.Server.Components.UI_Components
+@using RecipeStudio.Shared.DTOs
+@using RecipeStudio.Application.Services
+@using RecipeStudio.Application.Interfaces
+@inject IRecipeService RecipeSerivce
+
 <PageTitle>Recipes</PageTitle>
 <h1>Recips</h1>
 <div>
@@ -10,9 +15,9 @@
                 <td><b>No</b></td>
                 <td><b>Name</b></td>
                 <td><b>Author</b></td>
-                <td><b>Category</b></td>
+                <td><b>Categories</b></td>
                 <td><b>Description</b></td>
-                <td><b>Step</b></td>
+                <td><b>Steps</b></td>
                 <td><b>Ingredients</b></td>
             </tr>
         </thead>
@@ -20,17 +25,17 @@
             @{
                 _index = 0;
             }
-            @foreach (Recipe recipe in _recipes!)
+            @foreach (RecipeDTO recipe in _recipes!)
             {
                 _index++;
                 <tr>
                     <td>@_index</td>
                     <td>@recipe.Name</td>
-                    <td>@recipe.User.UserName</td>
+                    <td>@recipe.UserName</td>
                     <td>
                         <table>
 
-                            @foreach (var c in recipe.Categories ?? Enumerable.Empty<Category>())
+                            @foreach (var c in recipe.Categories)
                             {
                                 <tr>
                                     <td>@c.Name</td>
@@ -43,7 +48,7 @@
                     <td>
                         <table>
 
-                            @foreach (var s in recipe.Steps ?? Enumerable.Empty<Step>())
+                            @foreach (var s in recipe.Steps)
                             {
                                 <tr>
                                     <td>@s.Name</td>
@@ -53,7 +58,7 @@
                     </td>
                     <td>
                         <table>
-                            @foreach (var i in recipe.Ingredients ?? Enumerable.Empty<Ingredient>())
+                            @foreach (var i in recipe.Ingredients)
                             {
                                 <tr>
                                     <td>@i.Name - @i.Quantity</td>
@@ -68,72 +73,13 @@
     </table>
 </div>
 @code {
-    private List<Recipe>? _recipes = new()
-    {
-        new Recipe
-        {
-            Id = 1,
-            Name = "Spaghetti Carbonara",
-            Description = "Classic Italian pasta.",
-            UserId = 1,
-            Categories = new List<Category>
-            {
-                new Category { Id = 1, Name = "Breakfast" },
-                new Category { Id = 2, Name = "Lunch" }
-            },
-            User = new User{ Id = 1, UserName = "John Doe" },
 
-            Steps = new List<Step>
-            {
-                new Step { Id = 1, Name = "Prepare Ingredients" },
-                new Step { Id = 2, Name = "Heat Pan" },
-                new Step { Id = 3, Name = "Cook Mixture" },
-                new Step { Id = 4, Name = "Serve Dish" }
-            },
-            Ingredients = new List<Ingredient>
-            {
-                new Ingredient { Id = 1, Name = "Egg", Quantity = "2 pieces" },
-                new Ingredient { Id = 2, Name = "Milk", Quantity = "200 ml" },
-                new Ingredient { Id = 3, Name = "Flour", Quantity = "150 g" },
-                new Ingredient { Id = 4, Name = "Butter", Quantity = "50 g" },
-                new Ingredient { Id = 5, Name = "Salt", Quantity = "1 tsp" },
-                new Ingredient { Id = 6, Name = "Sugar", Quantity = "2 tbsp" },
-                new Ingredient { Id = 7, Name = "Olive Oil", Quantity = "1 tbsp" },
-                new Ingredient { Id = 8, Name = "Tomato", Quantity = "1 piece" },
-                new Ingredient { Id = 9, Name = "Onion", Quantity = "1 piece" },
-                new Ingredient { Id = 10, Name = "Garlic", Quantity = "2 cloves" },
-            }
-        },
-        new Recipe
-        {
-            Id = 2,
-            Name = "Chicken Curry",
-            Description = "Aromatic curry with chicken.",
-            UserId = 2,
-            Categories = new List<Category>
-            {
-                new Category { Id = 1, Name = "Dinner" },
-                new Category { Id = 2, Name = "Dessert" }
-            },
-            
-            User = new User{ Id = 2, UserName = "Anna Smith" },
-            
-            Steps = new List<Step>
-            {
-                new Step { Id = 1, Name = "Prepare Ingredients" },
-                new Step { Id = 2, Name = "Heat Pan" },
-            },           
-            
-            Ingredients = new List<Ingredient>
-            {
-                new Ingredient { Id = 6, Name = "Sugar", Quantity = "2 tbsp" },
-                new Ingredient { Id = 7, Name = "Olive Oil", Quantity = "1 tbsp" },
-                new Ingredient { Id = 8, Name = "Tomato", Quantity = "1 piece" },
-                new Ingredient { Id = 9, Name = "Onion", Quantity = "1 piece" },
-                new Ingredient { Id = 10, Name = "Garlic", Quantity = "2 cloves" }
-            } 
-        }
-    };
-
+    List<RecipeDTO> _recipes = new();    
     private int _index;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _recipes = await RecipeSerivce.GetAllAsync();
+
+    }
 }

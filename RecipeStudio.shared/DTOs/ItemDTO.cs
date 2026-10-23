@@ -10,6 +10,45 @@ namespace RecipeStudio.Shared.DTOs
      string Name,
      ItemType ItemType);
 
+    public record CategoryDTO : ItemDTO
+    {
+        public CategoryDTO(int id,
+                                string name):base(id, 
+                                    name, ItemType.Category)
+        {
+
+        }
+    }
+
+    public record StepDTO : ItemDTO
+    {
+        public StepDTO(int id,
+                                string name) : base(id,
+                                    name, ItemType.Step)
+        {
+
+        }
+    }
+
+    public record IngredientDTO : ItemDTO
+    {
+        public IngredientDTO(
+                int id,
+                string name,               
+                string quantity = "Unknown"): base(id,name,
+                                                ItemType.Category)
+        {
+            ArgumentNullException.ThrowIfNull(
+                quantity, nameof(quantity));
+
+            Quantity = quantity;
+        }
+
+        public string Quantity { get; init; }
+    }
+    
+    
+
     public enum ItemType
     {
         Category,
