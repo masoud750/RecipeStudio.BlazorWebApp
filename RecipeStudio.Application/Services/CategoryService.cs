@@ -22,25 +22,33 @@ namespace RecipeStudio.Application.Services
 
         private IRepository<Category> _categoryRepos;
         private IAppLogger _logger;
-        public async Task<List<ItemDTO>> GetAllAsync()
+        public async Task<List<CategoryDTO>> GetAllAsync()
         {
             //throw new NotImplementedException();
             List<Category> categories = new List<Category>();
             categories = await _categoryRepos.GetAllAsync();
-            List<ItemDTO> categoryItemDTOs = new();
-            foreach (var item in categories.ToList())
-            {
-                categoryItemDTOs.Add(new
-                     ItemDTO(item.Id, item.Name, ItemType.Category));
-            }
-            return categoryItemDTOs.ToList();
+            List<CategoryDTO> categoryDTOs = new();
+            categoryDTOs = ConvertToDTOs(categories);
+            return categoryDTOs;
         }
 
-        public async Task<ItemDTO?> GetByIdAsync(int id)
+        public List<CategoryDTO> ConvertToDTOs(List<Category> categories)
+        {
+            return CategoryConverter.ConvertToDTOs(categories);
+        }
+
+        public CategoryDTO CreateDTO(int id, string name)
+        {
+            return CategoryConverter.CreateDTO(id, name);
+        }
+
+       
+
+        public async Task<CategoryDTO?> GetByIdAsync(int id)
         {
             Category? category = await _categoryRepos.GetByIdAsync(id);
             return (category is null) ? null :
-                new ItemDTO(category.Id, category.Name, ItemType.Category);
+               CategoryConverter.ConvertToDTO(category);
         }
 
 

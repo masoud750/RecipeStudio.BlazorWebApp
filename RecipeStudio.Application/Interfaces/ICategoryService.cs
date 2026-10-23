@@ -7,9 +7,9 @@ namespace RecipeStudio.Application.Interfaces
 {
     public interface ICategoryService
     {
-        public Task<List<ItemDTO>> GetAllAsync();
+        public Task<List<CategoryDTO>> GetAllAsync();
 
-        public Task<ItemDTO?> GetByIdAsync(int id);
+        public Task<CategoryDTO?> GetByIdAsync(int id);
 
         public Task DeleteAsync(DeleteCategoryCommand category);
 
@@ -17,5 +17,6 @@ namespace RecipeStudio.Application.Interfaces
 
         public Task<OperationResult> AddAsync(AddCategoryCommand categoryCommand);
 
+        public CategoryDTO CreateDTO(int id, string Name);
     }
 }
