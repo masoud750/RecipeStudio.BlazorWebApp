@@ -25,7 +25,7 @@ namespace RecipeStudio.Application.Tests.Services
             var mockRepo = new CategoryRepositoryMock();                      
             var sut = new CategoryService(mockRepo, new LoggerMock());
             // Act
-            List<ItemDTO> result = await sut.GetAllAsync();
+            List<CategoryDTO> result = await sut.GetAllAsync();
             // Assert
             Assert.That(result, Is.Not.Null);   
             Assert.That(result.Count, Is.EqualTo(3));
