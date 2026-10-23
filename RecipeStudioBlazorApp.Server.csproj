@@ -17,6 +17,8 @@
     <Compile Remove="RecipeStudio.Application.Tests\**" />
     <Compile Remove="RecipeStudio.Application\**" />
     <Compile Remove="RecipeStudio.DataAccess\**" />
+    <Compile Remove="RecipeStudio.Infrastructure.Tests\**" />
+    <Compile Remove="RecipeStudio.Shared.Tests\**" />
     <Compile Remove="RecipeStudio.shared\**" />
     <Content Remove="Domain.Tests\**" />
     <Content Remove="Domain\**" />
@@ -27,6 +29,8 @@
     <Content Remove="RecipeStudio.Application.Tests\**" />
     <Content Remove="RecipeStudio.Application\**" />
     <Content Remove="RecipeStudio.DataAccess\**" />
+    <Content Remove="RecipeStudio.Infrastructure.Tests\**" />
+    <Content Remove="RecipeStudio.Shared.Tests\**" />
     <Content Remove="RecipeStudio.shared\**" />
     <EmbeddedResource Remove="Domain.Tests\**" />
     <EmbeddedResource Remove="Domain\**" />
@@ -37,6 +41,8 @@
     <EmbeddedResource Remove="RecipeStudio.Application.Tests\**" />
     <EmbeddedResource Remove="RecipeStudio.Application\**" />
     <EmbeddedResource Remove="RecipeStudio.DataAccess\**" />
+    <EmbeddedResource Remove="RecipeStudio.Infrastructure.Tests\**" />
+    <EmbeddedResource Remove="RecipeStudio.Shared.Tests\**" />
     <EmbeddedResource Remove="RecipeStudio.shared\**" />
     <None Remove="Domain.Tests\**" />
     <None Remove="Domain\**" />
@@ -47,14 +53,17 @@
     <None Remove="RecipeStudio.Application.Tests\**" />
     <None Remove="RecipeStudio.Application\**" />
     <None Remove="RecipeStudio.DataAccess\**" />
+    <None Remove="RecipeStudio.Infrastructure.Tests\**" />
+    <None Remove="RecipeStudio.Shared.Tests\**" />
     <None Remove="RecipeStudio.shared\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include=".github\architecture-review-findings.md" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Blazor.Bootstrap" Version="4.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.11">     
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.Fast.Components.FluentUI" Version="3.8.0" />
     <PackageReference Include="MudBlazor" Version="9.11.0" />
   </ItemGroup>
