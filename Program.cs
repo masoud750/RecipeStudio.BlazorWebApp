@@ -14,7 +14,7 @@ using RecipeStudioBlazorApp.Server.Authentification;
 
 using RecipeStudioBlazorApp.Server.Components;
 using RecipeStudioBlazorApp.Server.Endpoints;
-using RecipeStudio.DataAccess.Data;
+using Infrastructure.DependencyInjection;
 
 using System.Text;
 using Infrastructure.Repositories;
@@ -28,12 +28,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-
-builder.Services.AddDbContext<RecipeStudioDbContext>((sp,options) =>
-{
-    var env = sp.GetRequiredService<IHostEnvironment>();
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+// to maintain calean architecture we encapsulate dependency registration within 
+// the infrastructure.
+string connectionStr = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.RegisterDBService(connectionStr);
 
 builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService,CategoryService>();
@@ -113,11 +111,8 @@ builder.Services.AddScoped(sp =>
 
 
 var app = builder.Build();
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<RecipeStudioDbContext>();
-    db.Database.Migrate();
-}
+app.ApplyMigration();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
