@@ -14,7 +14,7 @@ namespace RecipeStudio.Infrastructure.Repositories
     public class CategoryRepository : IRepository<Category>
     {
 
-        public CategoryRepository(RecipeStudioDbContext dbContext,IAppLogger logger) 
+        public CategoryRepository(RecipeStudioDbContext dbContext, IAppLogger logger)
         {
             ArgumentNullException.ThrowIfNull(dbContext, nameof(dbContext));
             ArgumentNullException.ThrowIfNull(logger);
@@ -22,46 +22,51 @@ namespace RecipeStudio.Infrastructure.Repositories
             _logger = logger;
 
         }
-     
+
 
         private RecipeStudioDbContext _dbContext;
         private IAppLogger _logger;
 
-public async Task<RecipeStudio.Shared.Enums.OperationResult> AddAsync(Category entity)
-{
-    try
-    {
-        ArgumentNullException.ThrowIfNull(entity, nameof(entity));
-        entity.Name = entity.Name.ToLowerInvariant();
-                entity.ValidFrom = DateTime.UtcNow;
-                entity.ValidTo = new DateTime(2099, 12, 01);
-      
-        await _dbContext.AddAsync(entity);
-        await _dbContext.SaveChangesAsync();
-    }
-    catch (DbUpdateException ex)
-    {
-        _logger.LogWarning(ex, "Adding new category failed.");
-        _dbContext.Entry(entity).State = EntityState.Detached;
-        return RecipeStudio.Shared.Enums.OperationResult.AlreadyExists;
-    }
-    catch (Exception ex)
-    {
-        _logger.LogWarning(ex, "Adding new category failed.");
+        public async Task<RecipeStudio.Shared.Enums.OperationResult> AddAsync(Category entity)
+        {
+            try
+            {
+                ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+           
+            
+                if(await ExistAsync(entity))
+                {
+                    return Shared.Enums.OperationResult.AlreadyExists;
+                }
+                await _dbContext.AddAsync(entity);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                _dbContext.Entry(entity).State = EntityState.Detached;
+                _logger.LogWarning(ex,
+                    "Failed to add category. The category may already exist.");
+                return Shared.Enums.OperationResult.AlreadyExists;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+               "Failed to add category due to an unexpected error.");
                 _dbContext.Entry(entity).State = EntityState.Detached;
                 return RecipeStudio.Shared.Enums.OperationResult.Error;
-    }
+            }
 
-    return RecipeStudio.Shared.Enums.OperationResult.Success;
-}
+            return RecipeStudio.Shared.Enums.OperationResult.Success;
+        }
 
-           
-       
+
+
 
 
         public async Task DeleteAsync(Category entity)
         {
-           ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity, nameof(entity));
             //TODO: add try/catch block to handle exceptions for logging and error handling
             await _dbContext.Categories.Where(c => c.Id == entity.Id).ExecuteDeleteAsync();
         }
@@ -83,7 +88,7 @@ public async Task<RecipeStudio.Shared.Enums.OperationResult> AddAsync(Category e
 
         public async Task<bool> ExistAsync(Category entity)
         {
-            ArgumentNullException.ThrowIfNull(entity,nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity, nameof(entity));
             Category? result = await _dbContext.FindAsync<Category>(entity.Id);
             if (result == null)
                 return false;
