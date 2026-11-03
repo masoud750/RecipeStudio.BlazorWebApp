@@ -1,0 +1,82 @@
+﻿@page "/steps"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Authorization
+@using RecipeStudio.Shared.DTOs
+@using RecipeStudio.Application.Interfaces
+@using BlazorBootstrap
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IStepService StepService
+
+<div class="grid-bottom-left">
+<AuthorizeView Context="authContext">
+    <Authorized>
+         <PageTitle>Steps</PageTitle>
+         <h1>Steps</h1>
+         <div class="grid-layout">
+              <div class="grid-bottom-left">
+            @if (_steps != null && _steps.Count != 0)
+            {
+      <Grid TItem="StepDTO"
+      DataProvider="EmployeesDataProvider"
+      Class="table table-hover table-bordered "
+      >
+
+    <GridColumns>
+         <GridColumn TItem="StepDTO"
+                    HeaderText="No"
+                    PropertyName="EmployessDataProvider.Count"
+                   >
+            @context.Id
+        </GridColumn>
+        <GridColumn TItem="StepDTO"
+                    HeaderText="Id"
+                    PropertyName="Id"
+                   >
+            @context.Id
+        </GridColumn>
+
+        <GridColumn TItem="StepDTO"
+                    HeaderText="Step"
+                    PropertyName="Name"
+                    
+                    >
+            @context.Name
+        </GridColumn>
+
+    </GridColumns>
+
+</Grid>           
+            }
+            else
+            {
+                <p>No steps available.</p>
+            }
+       </div>
+         </div>
+      
+      
+    </Authorized>
+    <NotAuthorized>
+         <div>You are not authorized</div>
+    </NotAuthorized>
+</AuthorizeView>
+</div>
+@code {
+
+    private List<StepDTO>? _steps;
+    int _index;
+   private ElementReference _grid;
+    
+    protected override async Task OnInitializedAsync()
+    {
+       
+            _steps = await StepService.GetAllAsync();
+           await base.OnInitializedAsync();
+    }
+    private async Task<GridDataProviderResult<StepDTO>> EmployeesDataProvider(GridDataProviderRequest<StepDTO> request)
+    {
+            
+        return await Task.FromResult(request.ApplyTo(_steps));
+    }
+
+}
