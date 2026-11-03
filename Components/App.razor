@@ -9,17 +9,18 @@
     <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
    
 
-<!-- KORRIGIERTE ZEILE: Jetzt mit dem vollständigen Pfad zur CSS-Datei -->
-<link href="https://jsdelivr.net" rel="stylesheet">
+
+
 
 <!-- Für BlazorBootstrap ebenfalls wichtig -->
    <link rel="stylesheet" href="@Assets["_content/Blazor.Bootstrap/blazor.bootstrap.css"]" />
-  <link rel="stylesheet" href="@Assets["_content/blazor.bootstap.icons/css"]" />
     <link rel="stylesheet" href="@Assets["app.css"]" />
     <link rel="stylesheet" href="@Assets["RecipeStudioBlazorApp.Server.styles.css"]" />
     <link rel="stylesheet" href="@Assets["CSS/shared-dialog.css"]" />
+    <link rel="stylesheet" href="@Assets["CSS/grid-layout.css"]" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
     <!-- import icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
 
   
     <ImportMap />
@@ -27,11 +28,12 @@
     <HeadOutlet />
 </head>
 
-<body>
-    <Routes />
+<body>  
+         <Routes />  
     <ReconnectModal />
     <script src="@Assets["_framework/blazor.web.js"]"></script>
     <script src="_content/Blazor.Bootstrap/blazor.bootstrap.js"></script>
 </body>
 
 </html>
+

@@ -4,22 +4,25 @@
 @using RecipeStudio.Shared.DTOs
 @using RecipeStudio.Application.Interfaces
 @using BlazorBootstrap
+
+@using RecipeStudioBlazorApp.Server
 @inject AuthenticationStateProvider AuthStateProvider
 @inject IStepService StepService
+ <PageTitle>Steps</PageTitle>
+         <h1>Steps</h1>
 
-<div class="grid-bottom-left">
+
+<div>
 <AuthorizeView Context="authContext">
     <Authorized>
-         <PageTitle>Steps</PageTitle>
-         <h1>Steps</h1>
+        
          <div class="grid-layout">
               <div class="grid-bottom-left">
             @if (_steps != null && _steps.Count != 0)
             {
       <Grid TItem="StepDTO"
-      DataProvider="EmployeesDataProvider"
-      Class="table table-hover table-bordered "
-      >
+      DataProvider="StepProvider"
+      Class="table table-hover" >
 
     <GridColumns>
          <GridColumn TItem="StepDTO"
@@ -35,16 +38,29 @@
             @context.Id
         </GridColumn>
 
-        <GridColumn TItem="StepDTO"
-                    HeaderText="Step"
-                    PropertyName="Name"
-                    
-                    >
-            @context.Name
+    <GridColumn TItem="StepDTO"
+            PropertyName="Name">
+
+    <HeaderContent>
+    <span>Step</span>
+    
+</HeaderContent>
+    <ChildContent>
+        @context.Name
+    </ChildContent>
+
+</GridColumn>
+         <GridColumn TItem="StepDTO" PropertyName="Name" Filterable="false" Sortable="false">
+            <HeaderContent>
+            <Button Color="ButtonColor.Primary"><Icon Name="IconName.Plus" /></Button>
+            </HeaderContent>
+         
         </GridColumn>
+         
+          </GridColumns>
 
-    </GridColumns>
 
+    
 </Grid>           
             }
             else
@@ -63,19 +79,18 @@
 </div>
 @code {
 
-    private List<StepDTO>? _steps;
-    int _index;
+  private List<StepDTO>? _steps;
+  int _index;
    private ElementReference _grid;
     
     protected override async Task OnInitializedAsync()
-    {
-       
-            _steps = await StepService.GetAllAsync();
+    {       
+           _steps = await StepService.GetAllAsync();
            await base.OnInitializedAsync();
     }
-    private async Task<GridDataProviderResult<StepDTO>> EmployeesDataProvider(GridDataProviderRequest<StepDTO> request)
-    {
-            
+
+    private async Task<GridDataProviderResult<StepDTO>> StepProvider(GridDataProviderRequest<StepDTO> request)
+    {            
         return await Task.FromResult(request.ApplyTo(_steps));
     }
 
